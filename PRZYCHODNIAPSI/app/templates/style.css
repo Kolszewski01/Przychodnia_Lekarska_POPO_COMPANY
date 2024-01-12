@@ -1,0 +1,91 @@
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #D6E6F2;
+    color: #000;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+header {
+    background-color: #B9D7EA; /* Kolor headera */
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+main {
+    display: flex;
+    flex: 1;
+}
+
+nav {
+    background-color: #B9D7EA; /* Kolor tła navbara */
+    width: 200px;
+    padding-top: 20px;
+    min-height: 100%;
+}
+
+nav a {
+    padding: 8px 16px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+    margin-bottom: 8px;
+}
+
+nav a:hover {
+    background-color: #555; /* Kolor tła po najechaniu myszką */
+}
+#map-container {
+    width: 300px; /* Adjust width as needed */
+    height: 200px; /* Adjust height as needed */
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px;
+}
+
+.content div {
+    flex: 1;
+    margin-right: 30px;
+}
+.content div:last-child {
+    margin-right: 0;
+}
+#doctors img {
+    width: 200px;
+    height: 200px;
+    display: block;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#doctors{
+    display: flex;
+    flex-direction: column;
+    background-color: #B9D7EA;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+#review{
+    background-color: #B9D7EA;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 20px;
+    text-align: justify;
+    display: flex;
+    flex-direction: column;
+}
+footer {
+    background-color: #B9D7EA; /* Kolor tła stopki */
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
