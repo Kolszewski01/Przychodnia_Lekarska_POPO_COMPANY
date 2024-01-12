@@ -12,9 +12,4 @@ class Dokumentacja_medycznaViewSet(viewsets.ModelViewSet):
     serializer_class = Dokumentacja_medycznaSerializer
 
 def index(request):
-    context = {
-        'title': 'Strona główna',
-        'greeting': 'Witaj w moim projekcie Django!',
-        'content': 'To jest dynamiczna treść strony.'
-    }
-    return render(request, 'index.html', context)
+    return render(request, 'index.html')
