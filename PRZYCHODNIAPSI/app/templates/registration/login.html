@@ -1,0 +1,27 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaloguj się</title>
+</head>
+<body>
+
+    <h2>Zaloguj się</h2>
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            <label for="id_pesel">Pesel:</label>
+            {{ form.pesel }}
+            <br>
+            <label for="id_password">Hasło:</label>
+            {{ form.password }}
+            <button type="submit">Zaloguj się</button>
+        </form>
+
+    <p>Nie masz jeszcze konta? <a href="{% url 'register' %}">Zarejestruj się</a></p>#}
+
+</body>
+</html>

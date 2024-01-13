@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejestracja pacjenta</title>
+</head>
+<body>
+    <h2>Rejestracja pacjenta</h2>
+    <form method="post" action="{% url 'register_patient' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Zarejestruj</button>
+    </form>
+</body>
+</html>

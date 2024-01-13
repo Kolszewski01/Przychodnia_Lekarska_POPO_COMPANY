@@ -19,15 +19,17 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 
 
-from .views import home, logout_page
+from .views import home
+from user.views import register_view, CustomLoginView, CustomLogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('wizyta/', include(('wizyta.urls', 'wizyta'), namespace="wizyta")),
     path('pracownik/', include(('pracownik.urls', 'pracownik'), namespace="pracownik")),
-    path('pacjent/', include(('pacjent.urls', 'pacjent'), namespace="pacjent")),
+    path('register/', register_view, name='register'),
     path('dokumentacja_medyczna/', include(('dokumentacja_medyczna.urls', 'dokumentacja_medyczna'), namespace="dokumentacja_medyczna")),
     path('', home, name='home'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
 ]
 

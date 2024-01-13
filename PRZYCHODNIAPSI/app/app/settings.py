@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'wizyta',
     'dokumentacja_medyczna',
     'rest_framework',
-    # 'user',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +59,7 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -129,3 +129,9 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Aby skonfigurować LoginView do uwierzytelniania przy użyciu Twojego modelu CustomUser zamiast domyślnego modelu User,
+AUTHENTICATION_BACKENDS = ['app.backends.CustomBackend', 'django.contrib.auth.backends.ModelBackend']
+AUTH_USER_MODEL = 'user.CustomUser'
+LOGIN_REDIRECT_URL = 'home'

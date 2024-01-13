@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Przychodnia Online</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
 </head>
 <body>
     <header>
@@ -22,9 +23,9 @@
         <div class="section">
             <h2>
             {% if user.is_authenticated %}
-                Zalogowany użytkownik: <b>{{user.username}}</b>
+                Zalogowany użytkownik: <b>{{user.name}}</b>
             {% else %}
-            <a href="/login/">zaloguj się</a>    <a href="/register/">rejestracja</a>
+            <a href="{% url 'login' %}?next={{ request.path }}">zaloguj się</a>    <a href="/register/">rejestracja</a>
             {% endif %}
             </h2>
         </div>
@@ -36,17 +37,18 @@
         <nav>
             <div id="map-container">
                 <h2> Nasza Placówka</h2>
-            <iframe
-                width="100%"
-                height="100%"
-                frameborder="0"
-                scrolling="no"
-                marginheight="0"
-                marginwidth="0"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2393.3510557217074!2d20.492426515986976!3d53.794329480075726!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46ef7ceadcabf25b%3A0xe332b7a92749821!2sS%C5%82oneczna%2054%2C%2010-710%20Olsztyn!5e0!3m2!1sen!2spl!4v1641804253663!5m2!1sen!2spl"
-                allowfullscreen=""
-            >
-            </iframe>
+                <iframe
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+                    scrolling="no"
+                    marginheight="0"
+                    marginwidth="0"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2393.3510557217074!2d20.492426515986976!3d53.794329480075726!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46ef7ceadcabf25b%3A0xe332b7a92749821!2sS%C5%82oneczna%2054%2C%2010-710%20Olsztyn!5e0!3m2!1sen!2spl!4v1641804253663!5m2!1sen!2spl"
+                    allowfullscreen=""
+                >
+                </iframe>
+            </div>
         </nav>
 
         <!-- Content -->
@@ -70,10 +72,13 @@
     </main>
 <!-- Footer -->
     <footer>        
-        <form action="{% url 'logout' %}" method="post">
+        <form action="{% url 'logout' %}" method="post" id="logout-form">
             {% csrf_token %}
             <button type="submit">Wyloguj się</button>
         </form>
+        <script>
+
+        </script>
         <p>&copy; 2024 Przychodnia POPOCOMANY</p>
         <img src="{% static 'images/doc.png' %}" width="80px" height="80px" >
     </footer>
