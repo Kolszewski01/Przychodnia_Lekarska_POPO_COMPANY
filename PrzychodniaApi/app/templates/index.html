@@ -9,11 +9,11 @@
 </head>
 <body>
     <header>
-        <div class="section" id="section1">
+        <div class="section">
             <h2>Przychodnia online</h2>
         </div>
 
-        <div class="section" id="section2">
+        <div class="section">
             <h2>Numer telefonu: 623 772 612</h2>
         </div>
 
@@ -26,6 +26,14 @@
                 Zalogowany użytkownik: <b>{{user.email}}</b>
             {% else %}
                 <a href="{% url 'login' %}">zaloguj się</a>
+            {% endif %}
+            </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+
+            {% else %}
                 <a href="/register_patient/">rejestracja</a>
             {% endif %}
             </h2>

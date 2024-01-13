@@ -29,17 +29,5 @@ class PatientRegistrationForm(UserCreationForm):
         user = super().save(commit=False)
         user.is_patient = True  # Oznaczamy użytkownika jako pacjenta
         user.save()
-        #
-        # patient = Patient.objects.create(
-        #     user=user,
-        #     second_name=self.cleaned_data.get('second_name'),
-        #     last_name=self.cleaned_data['last_name'],
-        #     pesel=self.cleaned_data['pesel'],
-        #     birth_date=self.cleaned_data['birth_date'],
-        #     phone_number=self.cleaned_data['phone_number'],
-        #     city=self.cleaned_data['city'],
-        #     street=self.cleaned_data['street'],
-        #     house_number=self.cleaned_data['house_number'],
-        #     zip_code=self.cleaned_data['zip_code'],
-        # )
+
         return user

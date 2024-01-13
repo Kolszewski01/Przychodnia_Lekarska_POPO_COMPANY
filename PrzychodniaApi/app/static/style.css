@@ -8,6 +8,7 @@ body {
     background-color: #D6E6F2;
     color: #000;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    cursor: url('images/mov.ani'), auto;
 }
 
 header {
@@ -18,6 +19,7 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 main {
@@ -46,7 +48,21 @@ nav a:hover {
     width: 300px; /* Adjust width as needed */
     height: 80%; /* Adjust height as needed */
 }
-
+.section a{
+    padding: 15px;
+    text-decoration: none;
+    color: #FEFAE0;
+    display: block;
+    font-size: 18px;
+    width:100%;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+  }
+.section a:hover{
+    color: #283618;
+    transition: color 0.3s ease;
+}
 .content {
     display: flex;
     justify-content: space-between;
@@ -96,4 +112,25 @@ footer {
 }
 footer p{
     margin: 0;
+}
+
+form {
+    display: inline-block;
+}
+
+footer button {
+    padding: 10px 20px;
+    width: 300px;
+    border: none;
+    height: 50px;
+    background-color: #FF6666;
+    color: white;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-size: 23px;
+    border-radius: 23px;
+}
+
+footer button:hover {
+    background-color: #FF3333;
 }
