@@ -16,6 +16,10 @@ Including another URLconf
 """
 from django.urls import path, include
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
+
+
+from .views import home, logout_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +27,7 @@ urlpatterns = [
     path('pracownik/', include(('pracownik.urls', 'pracownik'), namespace="pracownik")),
     path('pacjent/', include(('pacjent.urls', 'pacjent'), namespace="pacjent")),
     path('dokumentacja_medyczna/', include(('dokumentacja_medyczna.urls', 'dokumentacja_medyczna'), namespace="dokumentacja_medyczna")),
+    path('', home, name='home'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
+

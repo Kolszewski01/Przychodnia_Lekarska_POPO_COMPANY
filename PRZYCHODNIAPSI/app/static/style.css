@@ -15,6 +15,9 @@ header {
     color: white;
     text-align: center;
     padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 main {
@@ -82,8 +85,15 @@ nav a:hover {
     flex-direction: column;
 }
 footer {
-    background-color: #B9D7EA; /* Kolor tła stopki */
+    background-color: #B9D7EA;
     color: white;
     text-align: center;
     padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+footer p{
+    margin: 0;
 }
