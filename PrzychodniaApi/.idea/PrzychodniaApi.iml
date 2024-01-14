@@ -16,7 +16,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Remote Python 3.11.6 Docker Compose (app) (6)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.11.6 Docker Compose (app at [C:\Users\OKej\Documents\GitHub\POPO_COMPANY_1315\PrzychodniaApi\docker-compose.yml])" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">

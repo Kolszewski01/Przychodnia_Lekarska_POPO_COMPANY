@@ -10,10 +10,13 @@ from django.db import transaction
 from .models import Patient
 
 class PatientRegistrationForm(UserCreationForm):
+    birth_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+
     second_name = forms.CharField(max_length=120, required=False)
     last_name = forms.CharField(max_length=120)
     pesel = forms.CharField(max_length=12)
-    birth_date = forms.DateField()
     phone_number = forms.CharField(max_length=9)
     city = forms.CharField(max_length=120)
     street = forms.CharField(max_length=120)
