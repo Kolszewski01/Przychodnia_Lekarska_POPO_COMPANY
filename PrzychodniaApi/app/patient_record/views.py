@@ -2,7 +2,7 @@ from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import Patient, PatientRecord, Prescription
 from .serializers import PatientRecordSerializer, PrescriptionSerializer
-
+from django.views.generic import ListView
 from rest_framework import permissions
 
 class IsPatientOwner(permissions.BasePermission):
@@ -16,14 +16,23 @@ class IsWorker(permissions.BasePermission):
         return request.user.is_worker
 
 
-class PatientRecordListView(generics.ListAPIView):
-    serializer_class = PatientRecordSerializer
-    permission_classes = [IsAuthenticated]  # Upewnij się, że użytkownik jest zalogowany
+# class PatientRecordListView(generics.ListAPIView):
+#     serializer_class = PatientRecordSerializer
+#     permission_classes = [IsAuthenticated]
+#
+#     def get_queryset(self):
+#         return PatientRecord.objects.filter(patient=self.request.user.patient)
+#
+#     def list(self, request, *args, **kwargs):
+#         patient_records = self.get_queryset()
+#         return render(request, 'index.html', {'patient_records': patient_records})
+class PatientRecordListView(ListView):
+    model = PatientRecord
+    template_name = 'patient_records_list.html'
+    context_object_name = 'patient_records'
 
     def get_queryset(self):
-        # Zwróć tylko rekordy dotyczące zalogowanego pacjenta
         return PatientRecord.objects.filter(patient=self.request.user.patient)
-
 
 class PatientRecordAdminView(generics.ListCreateAPIView):
     serializer_class = PatientRecordSerializer

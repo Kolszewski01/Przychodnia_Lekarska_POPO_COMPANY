@@ -24,6 +24,8 @@ from patient.views import register_patient
 
 from user.views import CustomLogoutView, CustomLoginView
 
+from worker.views import doctors_view
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('user.urls')),
@@ -33,5 +35,6 @@ urlpatterns = [
     path('register_patient/', register_patient, name='register_patient'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('google_calendar/', include('google_calendar_integration.urls')),
+    path('doctors/', doctors_view, name='doctors'),
 
 ]

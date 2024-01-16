@@ -72,11 +72,17 @@
                     Zapraszamy do Przychodni Online- tutaj zdrowie i dobrostan naszych pacjentów zawsze są na pierwszym miejscu.
                 </p>
             </div>
-            <div id="doctors">
-                <h2>Nasi specjaliści</h2>
-                <img src="static/images/doctor-female.jpg" width="200px" height="200px">
-                <img src="static/images/doctor-male.jpg" width="200px" height="200px">
-            </div>
+                <div>
+                    <h2>Nasi specjaliści</h2>
+                    <div id="doctors-slider">
+                        {% for i in "12345" %}
+                            {% with doctor_image='images/profile_images/doctor' %}
+                                <img src="{% static doctor_image|stringformat:"s" %}{{ i }}.png" width="200px" height="200px">
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+                    <img class="arrow" src="{% static 'images/down_arrow.png' %}" width="30px" height="30px">
+                </div>
         </div>
     </main>
 <!-- Footer -->
