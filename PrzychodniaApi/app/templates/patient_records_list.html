@@ -1,32 +1,86 @@
-<!-- templates/patient_records_list.html -->
-
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Records List</title>
+    <title>Przychodnia Online</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
 </head>
 <body>
+    <header>
+        <div class="section">
+            <h2>Przychodnia online</h2>
+        </div>
 
+        <div class="section">
+            <h2>Numer telefonu: 623 772 612</h2>
+        </div>
+
+        <div class="section" >
+            <h2>Olsztyn, Słoneczna 54 </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+                Zalogowany użytkownik: <b>{{user.email}}</b>
+            {% else %}
+                <a href="{% url 'login' %}">zaloguj się</a>
+            {% endif %}
+            </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+
+            {% else %}
+                <a href="/register_patient/">rejestracja</a>
+            {% endif %}
+            </h2>
+        </div>
+    </header>
+    <main>
+
+            <nav>
+                <div id="map-container">
+                    <a href="api/patient_records/" onclick="redirectOnce(this)">Dokumentacja medyczna</a>
+                    <script>
+                    function redirectOnce(link) {
+                        if (!link.clicked) {
+                            link.clicked = true;
+                            window.location.href = link.href;
+                        }
+                    }
+                    </script>
+                    <a href="">Zapisz się na wizytę </a>
+                    <a href="/" class="to_menu">Do menu </a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                  <button type="submit">Wyloguj</button>
+                </form>
+                </div>
+            </nav>
+    <div>
     <h1>Lista Rekordów Pacjenta</h1>
-
     {% if patient_records %}
-        <ul>
-            {% for record in patient_records %}
-                <li>
-                    <strong>Data utworzenia: </strong>{{ record.allergies }}
-                    <br>
-                    <strong>Alergie: </strong>{{ record.medical_history }}
-                    <br>
-                    <strong>Historia choroby: </strong>{{ record.visit_notes }}
-                    <!-- Dodaj pozostałe pola w podobny sposób -->
-                </li>
-            {% endfor %}
-        </ul>
+            <ul>
+                {% for record in patient_records %}
+                    <li>
+                        <strong>Data utworzenia: </strong>{{ record.allergies }}
+                        <br>
+                        <strong>Alergie: </strong>{{ record.medical_history }}
+                        <br>
+                        <strong>Historia choroby: </strong>{{ record.visit_notes }}
+                        <!-- Dodaj pozostałe pola w podobny sposób -->
+                    </li>
+                {% endfor %}
+            </ul>
     {% else %}
         <p>Brak dostępnych rekordów pacjenta.</p>
     {% endif %}
+    </div>
+    </main>
+
 
 </body>
 </html>

@@ -41,6 +41,32 @@
     </header>
 
 <!-- Main content -->
+    {% if user.is_authenticated %}
+        <main>
+            <nav>
+                <div id="map-container">
+                    <a href="api/patient_records/">Dokumentacja medyczna</a>
+                    <a href="">Zapisz się na wizytę </a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                  <button type="submit">Wyloguj</button>
+                </form>
+                </div>
+            </nav>
+            <div class="content">
+                <div id="review">
+                    <p>
+                        <h2>O nas</h2>
+                        Witamy w Przychodni Online, miejscu, gdzie zdrowie i dobre samopoczucie naszych pacjentów stają się naszym priorytetem. Jesteśmy zespołem doświadczonych specjalistów z różnych dziedzin medycyny, którzy łączą wiedzę i pasję, aby zapewnić Państwu opiekę na najwyższym poziomie.
+                        Nasza przychodnia oferuje szeroki zakres usług medycznych, w tym konsultacje specjalistyczne, diagnostykę, leczenie ambulatoryjne oraz wsparcie w zakresie zdrowia psychicznego. Korzystamy z nowoczesnego sprzętu i najnowszych technologii, aby zapewnić dokładną diagnozę i skuteczne leczenie.
+                        Wierzymy, że kluczem do skutecznej opieki zdrowotnej jest indywidualne podejście do każdego pacjenta. Dlatego nasz personel jest zawsze gotowy wysłuchać, zrozumieć i dostosować plan leczenia do unikalnych potrzeb każdego z Państwa.
+                        Nasze zaangażowanie w doskonalenie umiejętności i ciągłe szkolenie personelu gwarantuje, że zawsze jesteśmy na bieżąco z najnowszymi osiągnięciami w medycynie. Dążymy do tego, aby nasza przychodnia była miejscem, gdzie każdy pacjent czuje się bezpiecznie, szanowanie i komfortowo.
+                        Zapraszamy do Przychodni Online- tutaj zdrowie i dobrostan naszych pacjentów zawsze są na pierwszym miejscu.
+                    </p>
+                </div>
+            </div>
+        </main>
+    {% else %}
     <main>
         <!-- Navbar pionowy -->
         <nav>
@@ -85,15 +111,10 @@
                 </div>
         </div>
     </main>
+    {% endif %}
 <!-- Footer -->
     <footer>        
-            <form method="post" action="{% url 'logout' %}">
-              {% csrf_token %}
-              <button type="submit">Wyloguj</button>
-            </form>
-        <script>
 
-        </script>
         <p>&copy; 2024 Przychodnia POPOCOMANY</p>
         <img src="{% static 'images/doc.png' %}" width="80px" height="80px" >
     </footer>

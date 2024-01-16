@@ -34,15 +34,29 @@ nav {
     flex-direction: column;
     background-color: #B9D7EA;
     padding: 10px;
+    justify-content: space-around;
 }
 
 nav a {
+    padding: 10px 20px;
+    border: none;
+    height: 50px;
+    background-color: #86acd5;
     color: white;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-size: 23px;
     text-decoration: none;
+    border-radius: 23px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 40px;
 }
 
 nav a:hover {
-    background-color: #555; /* Kolor tła po najechaniu myszką */
+    background-color: #6b92bd;
 }
 #map-container {
     width: 300px; /* Adjust width as needed */
@@ -62,6 +76,26 @@ nav a:hover {
 .section a:hover{
     color: #283618;
     transition: color 0.3s ease;
+}
+.to_menu{
+    padding: 10px 20px;
+    border: none;
+    height: 50px;
+    background-color: #47759d;
+    color: white;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-size: 23px;
+    text-decoration: none;
+    border-radius: 23px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 40px;
+}
+.to_menu:hover{
+    background-color: #3c77a8;
 }
 .content {
     display: flex;
@@ -125,7 +159,7 @@ form {
     display: inline-block;
 }
 
-footer button {
+nav button {
     padding: 10px 20px;
     width: 300px;
     border: none;
@@ -138,11 +172,10 @@ footer button {
     border-radius: 23px;
 }
 
-footer button:hover {
+nav button:hover {
     background-color: #FF3333;
 }
 .arrow {
     cursor: pointer;
-
 }
 

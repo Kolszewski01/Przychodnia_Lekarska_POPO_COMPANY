@@ -10,7 +10,7 @@ def register_patient(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Pomyślnie zarejestrowano pacjenta.')
-            return redirect('home')  # Możesz dostosować URL przekierowania
+            return redirect('home')
         else:
             messages.error(request, 'Wystąpił błąd w formularzu. Spróbuj ponownie.')
     else:
