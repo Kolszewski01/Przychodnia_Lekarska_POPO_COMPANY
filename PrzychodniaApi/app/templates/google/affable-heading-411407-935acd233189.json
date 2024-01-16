@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "affable-heading-411407",
+  "private_key_id": "935acd233189ca8f217cb944b5366c61297465f7",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCm3fSjCRJxNdW9\n3Kokzv+uw7Hzz5jHoYzjQv+wddGjj9R5a03pYWuTciOeuYGHIvYjYJoh1RMeG5Yl\nUkyHm2PmKVNexnnV4TYcdQHNnnvrsQZwNLjj7YV+KDfErM9BRFVKJdPYCBXMybSj\nGJ6zjjNOeHzLcopCpVLsSRJYuh8K8a3JmPlSDuVNb/wxEIBp0oDifs30+jo1LDbn\nTKFmWAuHQPWsXu23C7bcX8CftIc59E+6w3H3/sox5AMoFXL+u5VKx2kvR0UgwOb0\nvB1fNdyv8Lod7x2jKXsqwPHWtQEJt9kcSK8SMWELJViPfM5PyJdWtNYe30xnBzy4\nAhYBUsXnAgMBAAECggEAUka6avD8MOn0e+sj0YZnN4qyYZ8Im9YiG6RbYmyVc2pl\nv4CTJ/GrE0aCHa8mGLW6W3M0TF49UOkVPU25AlwyA7h4rRB73mNvRNTEkNgGDg55\nODYmu+vPmIbICKeUgX/p9ed07t39sb363Tg0eCAzWAu8rKvLVFUj7/GPpEQRLll0\nB8jQg42Y2FWfZoa1VRa/sQKxSV/ZEpxzB0RZSaNrYsb/xZii+cDIk4v0e4BUK37R\np+EP0HMDbif4lFbjH8zTMh4eDgFJddJV3ClQa5SCZeLgFn4sqGstbQnb3Lca9up9\nvlh+yZkulLNf1qo0C1VkOaeK52kpqScm9Sql3swRoQKBgQDU/BdYNDvbXnqO4oyJ\nut55dNEiqCzQsfToVFWiWWSXc5UOs1iusQqrbHAJEq2L9c26e4lkPIvf27IiWCII\n6Fi3N1w9P5+Fw1ljG9eM22vVpuHLK6hNKs6dbqw3g+VTMRkhirRuIWPPTtaqvE+u\nWJqIxXnxXPZtmIpt3ipRXIgj3wKBgQDIkXLsW/c5e7/b1kEyJkcYfrE/ZfRavehv\njH1GNV1hvkAntXG7HVxespcRD5h38rvUTXstVIAdZPNpyShjDApF2Zt+/f/xQCAT\nF/n3QmxSuLdsnUTG8WBx1O5MNx+JvIARiwiPMi2Bp4D7KWbfXv9qA3ycvI29b34/\nvZxsE8Re+QKBgQDOEATKCudqq7Mp8RiF3O2IVzRMMqgBVlucOJQNmi2Ptn0dlvmT\nMqkfB7AxpwePpUbhSMq51zaBZH6padmsAphq0z4D6D1/3mvqTrKyjkx7jpVgy6Fu\n3569hKlMoOjMH3GwGRHOh7GYji91SvJQvVruPxlnI0ks6evstoj85Oi2wwKBgHaB\nCcgBZoc+SNPZOdgpqaQdZxiwYroiru0JsxMCgNQ5lqpfmH0YEfWZy4w3DL0CXFxK\nE1drL+8uMGv2gLhU6tTuh+N2q/ydCNZ/OiAPzPTrUuUH3xU0lOltCAdcInQ9PeYf\nocUJvr12fMzpX3DnLj4zJTNubMja0VtT6tIos8PxAoGBAK3/L5WiwGPlTf50VL3T\ngSzy2XmGMPRiGhnBkKpnB/NqoJ/yZT+7a/J3ZOMOxFktv+HsiKmTCTJqbEme0S3d\neOwlzEwF0OgaW2ixQwhOZRl26aVcH1R24pX7YIibe1QtPYlcJbCLquaiLcXB8fTL\nIXnLwUVGzPrXBybd1lDW8nLh\n-----END PRIVATE KEY-----\n",
+  "client_email": "przychodniaapi@affable-heading-411407.iam.gserviceaccount.com",
+  "client_id": "117795474378822616524",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/przychodniaapi%40affable-heading-411407.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
