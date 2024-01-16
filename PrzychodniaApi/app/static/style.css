@@ -12,7 +12,7 @@ body {
 }
 
 header {
-    background-color: #B9D7EA; /* Kolor headera */
+    background-color: #B9D7EA;
     color: white;
     text-align: center;
     padding: 10px;
@@ -29,12 +29,11 @@ main {
 
 nav {
     display: flex;
-    margin-top: 10px;
     align-items: center;
     flex-direction: column;
     background-color: #B9D7EA;
     padding: 10px;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 nav a {
@@ -179,3 +178,15 @@ nav button:hover {
     cursor: pointer;
 }
 
+#documentary{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.patient_records{
+    background-color: #B9D7EA;
+    margin: 10px;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 10px;
+}

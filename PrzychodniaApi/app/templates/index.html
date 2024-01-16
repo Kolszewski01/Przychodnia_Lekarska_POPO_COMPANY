@@ -39,10 +39,25 @@
             </h2>
         </div>
     </header>
-
 <!-- Main content -->
     {% if user.is_authenticated %}
-        <main>
+        {% if user.is_staff %}
+            <div>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                  <button type="submit">Wyloguj</button>
+                </form>
+            <p> Morbi ullamcorper eget massa quis pulvinar. Nulla venenatis pellentesque ullamcorper.
+                Phasellus ac felis ultricies enim porta consectetur eget ut enim. Vivamus vestibulum facilisis fringilla.
+                Etiam maximus elit nec magna efficitur, sit amet rhoncus neque placerat. Suspendisse ac elit quis enim lacinia dapibus.
+                In sit amet nulla nunc. Donec vitae efficitur massa, eu dignissim arcu.
+                Donec hendrerit mollis dui, non maximus felis sollicitudin ac. Quisque orci leo, posuere nec scelerisque pretium,
+                vestibulum imperdiet turpis. Aliquam quis ligula mi. Aenean massa quam, vulputate
+                eu lacinia vel, pulvinar in turpis. Nullam faucibus, sem et fringilla pellentesque, ex justo pharetra eros,
+                ut dapibus risus lacus eu nisi. Aliquam ligula nulla, efficitur ac magna ac, faucibus placerat metus.</p>
+            </div>
+        {% else %}
+           <main>
             <nav>
                 <div id="map-container">
                     <a href="api/patient_records/">Dokumentacja medyczna</a>
@@ -66,6 +81,8 @@
                 </div>
             </div>
         </main>
+        {% endif %}
+
     {% else %}
     <main>
         <!-- Navbar pionowy -->
@@ -114,7 +131,7 @@
     {% endif %}
 <!-- Footer -->
     <footer>        
-
+        <img src="{% static 'images/popo.png' %}" width="80px" height="80px" >
         <p>&copy; 2024 Przychodnia POPOCOMANY</p>
         <img src="{% static 'images/doc.png' %}" width="80px" height="80px" >
     </footer>
