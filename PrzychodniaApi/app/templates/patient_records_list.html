@@ -1,0 +1,32 @@
+<!-- templates/patient_records_list.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Records List</title>
+</head>
+<body>
+
+    <h1>Lista Rekordów Pacjenta</h1>
+
+    {% if patient_records %}
+        <ul>
+            {% for record in patient_records %}
+                <li>
+                    <strong>Data utworzenia: </strong>{{ record.allergies }}
+                    <br>
+                    <strong>Alergie: </strong>{{ record.medical_history }}
+                    <br>
+                    <strong>Historia choroby: </strong>{{ record.visit_notes }}
+                    <!-- Dodaj pozostałe pola w podobny sposób -->
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Brak dostępnych rekordów pacjenta.</p>
+    {% endif %}
+
+</body>
+</html>
