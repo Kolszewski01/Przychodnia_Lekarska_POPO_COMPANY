@@ -10,7 +10,13 @@ class IsPatientOwner(permissions.BasePermission):
         # Sprawdź, czy żądający użytkownik jest właścicielem pacjenta
         return obj.user == request.user
 
-class PatientRecordListView(generics.ListCreateAPIView):
+class IsWorker(permissions.BasePermission):
+    def has_permission(self, request, view):
+        # Sprawdź, czy użytkownik ma rolę worker
+        return request.user.is_worker
+
+
+class PatientRecordListView(generics.ListAPIView):
     serializer_class = PatientRecordSerializer
     permission_classes = [IsAuthenticated]  # Upewnij się, że użytkownik jest zalogowany
 
@@ -18,13 +24,10 @@ class PatientRecordListView(generics.ListCreateAPIView):
         # Zwróć tylko rekordy dotyczące zalogowanego pacjenta
         return PatientRecord.objects.filter(patient=self.request.user.patient)
 
-    def perform_create(self, serializer):
-        # Przypisz pacjenta do nowego rekordu
-        serializer.save(patient=self.request.user.patient)
 
 class PatientRecordAdminView(generics.ListCreateAPIView):
     serializer_class = PatientRecordSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]  # Upewnij się, że użytkownik jest zalogowany i to administrator
+    permission_classes = [IsAuthenticated, IsWorker]  # Upewnij się, że użytkownik jest zalogowany i to administrator
 
     def get_queryset(self):
         # Zwróć wszystkie rekordy dla administratora

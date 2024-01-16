@@ -18,7 +18,7 @@ class Worker(User):
     house_number = models.CharField(max_length=10)
     zip_code = models.CharField(max_length=10)
     profile_image = models.ImageField(upload_to='static/images/profile_images', null=True, blank=True)
-
+    is_worker = models.BooleanField(default=True)
     class Meta:
         abstract = True
 
@@ -47,7 +47,6 @@ class Doctor(Worker):
     specialization = models.CharField(max_length=120)
     room_number = models.CharField(max_length=10, verbose_name='Room Number')
     prof_title = models.CharField(choices=PROF_TITLE_CHOICES, default='Dr. med.')
-
 
 class Secretary(Worker):
     pass
