@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'patient',
     'worker',
     'patient_record',
+    'google_calendar_integration',
 ]
 
 MIDDLEWARE = [

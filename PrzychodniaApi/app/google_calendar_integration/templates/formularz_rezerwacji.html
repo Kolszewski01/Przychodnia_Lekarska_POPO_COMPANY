@@ -1,0 +1,8 @@
+<!-- formularz_rezerwacji.html -->
+
+<form method="post" action="{% url 'zarezerwuj_termin' %}">
+    {% csrf_token %}
+    <input type="datetime-local" name="start_time">
+    <input type="datetime-local" name="end_time">
+    <input type="submit" value="Zarezerwuj termin">
+</form>

@@ -1,0 +1,7 @@
+<!-- znajdz_terminy.html -->
+
+{% for termin in dostepne_terminy %}
+  <div>
+    <p>Dostępny termin: {{ termin.start }} do {{ termin.end }}</p>
+  </div>
+{% endfor %}

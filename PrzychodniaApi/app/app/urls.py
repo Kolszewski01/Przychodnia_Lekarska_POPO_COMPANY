@@ -31,4 +31,6 @@ urlpatterns = [
     path('logout/', CustomLogoutView.as_view(), name='logout'),
     path('register_patient/', register_patient, name='register_patient'),
     path('login/', CustomLoginView.as_view(), name='login'),
+    path('google_calendar/', include('google_calendar_integration.urls')),
+
 ]
