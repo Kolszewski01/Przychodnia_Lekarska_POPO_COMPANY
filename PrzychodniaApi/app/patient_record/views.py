@@ -1,7 +1,7 @@
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .models import Patient, PatientRecord
-from .serializers import PatientRecordSerializer
+from .models import Patient, PatientRecord, Prescription
+from .serializers import PatientRecordSerializer, PrescriptionSerializer
 
 from rest_framework import permissions
 
@@ -36,3 +36,24 @@ class PatientRecordAdminView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Przypisz pacjenta do nowego rekordu
         serializer.save(patient=self.request.user.patient)
+
+class PrescriptionListView(generics.ListAPIView):
+    serializer_class = PrescriptionSerializer
+    permission_classes = [IsAuthenticated]  # Make sure the user is authenticated
+
+    def get_queryset(self):
+        # Return only prescriptions related to the logged-in patient
+        return Prescription.objects.filter(patient_record__patient=self.request.user.patient)
+
+
+class PrescriptionAdminView(generics.ListCreateAPIView):
+    serializer_class = PrescriptionSerializer
+    permission_classes = [IsAuthenticated, IsWorker]
+
+    def get_queryset(self):
+        # Zwróć wszystkie rekordy dla workera
+        return Prescription.objects.all()
+
+    def perform_create(self, serializer):
+        # Przypisz pacjenta do nowego rekordu na podstawie relacji z PatientRecord
+        serializer.save(patient_record__patient=self.request.user.patient)
