@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista Lekarzy</title>
+    <style>
+        .doctor-photo {
+            width: 100px; /* Ustaw szerokość zdjęcia */
+            height: auto; /* Zachowaj proporcje zdjęcia */
+            border-radius: 50%; /* Opcjonalnie, aby zdjęcia były okrągłe */
+        }
+        .doctor-link {
+            display: block; /* Aby przycisk zajmował całą szerokość li */
+            text-decoration: none; /* Usuwa podkreślenie z linków */
+            color: black; /* Kolor tekstu */
+            padding: 10px; /* Dodaje trochę przestrzeni wokół tekstu */
+            margin: 5px 0; /* Margines pomiędzy elementami listy */
+            background-color: #e0e0e0; /* Tło przycisku */
+            border-radius: 5px; /* Zaokrąglenie krawędzi przycisku */
+        }
+        .doctor-link:hover {
+            background-color: #d0d0d0; /* Zmiana koloru tła przycisku przy najechaniu */
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista Lekarzy</h1>
+    <ul>
+        {% for doctor in doctors %}
+            <li>
+                <img src="{{ doctor.profile_image.url }}" alt="Zdjęcie {{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo">
+                <a href="{% url 'nazwa_widoku_kalendarza' doctor.id %}" class="doctor-link">
+                    {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}
+                </a>
+            </li>
+        {% empty %}
+            <li>Brak dostępnych lekarzy.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

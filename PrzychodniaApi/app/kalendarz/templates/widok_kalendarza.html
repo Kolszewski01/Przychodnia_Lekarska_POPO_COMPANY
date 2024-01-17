@@ -1,0 +1,53 @@
+{% load static %}
+{% load custom_filteres %} <!-- Poprawiona nazwa filtra -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kalendarz Lekarza: {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'stylekalendarz.css' %}">
+    <script src="{% static 'sciptkalendarz.js' %}" defer></script> <!-- Poprawiona nazwa pliku -->
+</head>
+<body>
+    <div id="schedule-container">
+        <h1>Kalendarz Lekarza: {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}</h1>
+
+        <!-- Przyciski do przewijania tygodni -->
+        <button id="prevWeekButton" onclick="changeWeek(-1)">&#9664; Poprzedni tydzień</button>
+        <button id="nextWeekButton" onclick="changeWeek(1)">Następny tydzień &#9654;</button>
+
+        <table id="schedule-table">
+            <thead>
+                <tr>
+                    <th>Godzina</th>
+                    <th id="day-0">Poniedziałek</th>
+                    <th id="day-1">Wtorek</th>
+                    <th id="day-2">Środa</th>
+                    <th id="day-3">Czwartek</th>
+                    <th id="day-4">Piątek</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hour in godziny %}
+                <tr>
+                    <td>{{ hour }}</td>
+                    {% for day in dni_tygodnia %}
+                    <td id="slot-{{ day }}-{{ hour }}">
+                        {% if hour in dostepne_terminy|default_if_none:0|get_item:day %}
+                        <button class="time-slot available">Dostępne</button>
+                        {% else %}
+                        <button class="time-slot unavailable">Niedostępne</button>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        // Dodanie nasłuchiwaczy po załadowaniu DOM
+        document.addEventListener('DOMContentLoaded', addListeners);
+    </script>
+</body>
+</html>
