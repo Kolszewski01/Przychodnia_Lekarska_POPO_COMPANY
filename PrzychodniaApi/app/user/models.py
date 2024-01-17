@@ -1,5 +1,3 @@
-
-
 # Create your models here.
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
@@ -13,7 +11,7 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError('User must have an email address')
 
-        user: 'User' = self.model(email=self.normalize_email(email), **extra_fields)
+        user: 'User' = self.model(email=self.normalize_email(email), role=role, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
 
@@ -34,6 +32,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model"""
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    role = models.CharField(max_length=20,
+                            choices=[('doctor', 'Doctor'), ('secretary', 'Secretary'), ('patient', 'Patient')],
+                            default='patient')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     objects = UserManager()

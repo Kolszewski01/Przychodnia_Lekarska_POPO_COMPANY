@@ -9,7 +9,7 @@ from rest_framework.settings import api_settings
 from django.shortcuts import render, redirect
 from user.serializers import UserSerializer, AuthTokenSerializer
 
-from .forms import CustomLoginForm
+from .forms import CustomLoginForm, AdminRegistrationForm
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -54,3 +54,14 @@ class CustomLoginView(LoginView):
         if not remember_me:
             self.request.session.set_expiry(0)
         return super().form_valid(form)
+
+def admin_registration_view(request):
+    if request.method == 'POST':
+        form = AdminRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            return redirect('home')
+    else:
+        form = AdminRegistrationForm()
+
+    return render(request, 'admin_registration.html', {'form': form})
