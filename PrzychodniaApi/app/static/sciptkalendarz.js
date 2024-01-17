@@ -2,7 +2,7 @@ let currentWeekStartDate = new Date(); // Początkowa data aktualnego tygodnia
 
 // Funkcja do zmiany tygodnia
 function changeWeek(direction) {
-    currentWeekStartDate.setDate(currentWeekStartDate.getDate() + 7 * direction);
+    currentWeekStartDate.setDate(currentWeekStartDate.getDate() + (direction * 7));
     console.log("Nowa data początkowa tygodnia: ", currentWeekStartDate.toISOString().split('T')[0]);
     updateCalendarView();
 }
@@ -40,21 +40,19 @@ function updateCalendarSlots(data) {
 
 // Funkcja do dodawania nasłuchiwaczy do przycisków
 function addListeners() {
-    const prevWeekButton = document.getElementById('prevWeekButton');
-    const nextWeekButton = document.getElementById('nextWeekButton');
+    // Attaching event listener to 'previous week' button
+    document.getElementById('prevWeekButton').addEventListener('click', function() {
+        changeWeek(-1);
+    });
 
-    if (prevWeekButton && nextWeekButton) {
-        prevWeekButton.addEventListener('click', function() {
-            changeWeek(-1);
-        });
-
-        nextWeekButton.addEventListener('click', function() {
-            changeWeek(1);
-        });
-    } else {
-        console.log('Przyciski nie zostały znalezione');
-    }
+    // Attaching event listener to 'next week' button
+    document.getElementById('nextWeekButton').addEventListener('click', function() {
+        changeWeek(1);
+    });
 }
+
+// Ensure event listeners are added after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', addListeners);
 
 // Dodanie nasłuchiwaczy po załadowaniu DOM
 document.addEventListener('DOMContentLoaded', addListeners);

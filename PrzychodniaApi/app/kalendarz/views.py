@@ -1,7 +1,8 @@
 from time import timezone
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.utils import timezone
+from django.views.decorators.http import require_GET
 from rest_framework.views import APIView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Calendar, Reservation
@@ -123,20 +124,26 @@ def widok_kalendarza(request, doctor_id):
     })
 
 
+@require_GET
 def get_calendar_data(request):
     # Pobierz datę z zapytania GET
     date_str = request.GET.get('date')
-    if date_str:
-        start_date = parse_date(date_str)
-        if start_date:
-            # Ustaw zakres daty na cały tydzień
-            end_date = start_date + datetime.timedelta(days=6)
 
-            # Pobierz dane z modelu Calendar
-            calendar_entries = Calendar.objects.filter(data__range=[start_date, end_date])
+    if not date_str:
+        return HttpResponseBadRequest('Brak daty w zapytaniu GET')
 
-            # Przygotuj dane do odpowiedzi
-            data = [{'day': entry.data.weekday(), 'time': entry.data.strftime('%H:%M')} for entry in calendar_entries]
-            return JsonResponse(data, safe=False)
+    start_date = parse_date(date_str)
 
-    return JsonResponse({'error': 'Niepoprawna data'}, status=400)
+    if not start_date:
+        return HttpResponseBadRequest('Niepoprawny format daty')
+
+    # Ustaw zakres daty na cały tydzień
+    end_date = start_date + datetime.timedelta(days=6)
+
+    # Pobierz dane z modelu Calendar
+    calendar_entries = Calendar.objects.filter(data__range=[start_date, end_date])
+
+    # Przygotuj dane do odpowiedzi
+    data = [{'day': entry.data.weekday(), 'time': entry.data.strftime('%H:%M')} for entry in calendar_entries]
+
+    return JsonResponse(data, safe=False)
