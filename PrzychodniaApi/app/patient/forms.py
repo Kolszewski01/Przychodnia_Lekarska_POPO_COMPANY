@@ -30,7 +30,7 @@ class PatientRegistrationForm(UserCreationForm):
     @transaction.atomic
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.is_patient = True  # Oznaczamy użytkownika jako pacjenta
+        user.is_patient = True
         user.save()
 
         return user

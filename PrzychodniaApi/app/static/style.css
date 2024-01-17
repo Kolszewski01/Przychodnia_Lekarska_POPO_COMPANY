@@ -12,7 +12,7 @@ body {
 }
 
 header {
-    background-color: #B9D7EA; /* Kolor headera */
+    background-color: #B9D7EA;
     color: white;
     text-align: center;
     padding: 10px;
@@ -29,20 +29,33 @@ main {
 
 nav {
     display: flex;
-    margin-top: 10px;
     align-items: center;
     flex-direction: column;
     background-color: #B9D7EA;
     padding: 10px;
+    justify-content: space-between;
 }
 
 nav a {
+    padding: 10px 20px;
+    border: none;
+    height: 50px;
+    background-color: #86acd5;
     color: white;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-size: 23px;
     text-decoration: none;
+    border-radius: 23px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 40px;
 }
 
 nav a:hover {
-    background-color: #555; /* Kolor tła po najechaniu myszką */
+    background-color: #6b92bd;
 }
 #map-container {
     width: 300px; /* Adjust width as needed */
@@ -63,6 +76,26 @@ nav a:hover {
     color: #283618;
     transition: color 0.3s ease;
 }
+.to_menu{
+    padding: 10px 20px;
+    border: none;
+    height: 50px;
+    background-color: #47759d;
+    color: white;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-size: 23px;
+    text-decoration: none;
+    border-radius: 23px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 40px;
+}
+.to_menu:hover{
+    background-color: #3c77a8;
+}
 .content {
     display: flex;
     justify-content: space-between;
@@ -76,20 +109,27 @@ nav a:hover {
 .content div:last-child {
     margin-right: 0;
 }
-#doctors img {
-    width: 200px;
-    height: 200px;
-    display: block;
-    margin-bottom: 15px;
-    margin-left: auto;
-    margin-right: auto;
-}
-#doctors{
+#doctors-slider {
+    background-color: #B9D7EA;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
     display: flex;
     flex-direction: column;
-    background-color: #B9D7EA;
-    margin-left: 10%;
-    margin-right: 10%;
+    justify-content: center;
+    align-items: center;
+}
+
+#slides-container {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.5s ease-in-out;
+}
+
+#doctors-slider img {
+    width: 300px;
+    height: 300px;
+    margin-bottom: 20px; /* Odległość między zdjęciami, dostosuj według potrzeb */
 }
 #review{
     background-color: #B9D7EA;
@@ -118,7 +158,7 @@ form {
     display: inline-block;
 }
 
-footer button {
+nav button {
     padding: 10px 20px;
     width: 300px;
     border: none;
@@ -131,6 +171,22 @@ footer button {
     border-radius: 23px;
 }
 
-footer button:hover {
+nav button:hover {
     background-color: #FF3333;
+}
+.arrow {
+    cursor: pointer;
+}
+
+#documentary{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.patient_records{
+    background-color: #B9D7EA;
+    margin: 10px;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 10px;
 }

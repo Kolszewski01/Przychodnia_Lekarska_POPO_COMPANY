@@ -15,10 +15,10 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 300px;  /* Możesz dostosować szerokość formularza według własnych preferencji */
+    width: 300px;
 }
 label {
-    width: 300px;  /* Ustawienie każdego labela na pełną szerokość formularza */
+    width: 300px;
     margin-bottom: 10px;
 }
 input {
@@ -27,7 +27,7 @@ input {
     padding: 8px;
 }
 button {
-    width: 100%;  /* Ustawienie przycisku na pełną szerokość formularza */
+    width: 100%;
     box-sizing: border-box;
     padding: 10px;
     background-color: #4caf50;
@@ -43,4 +43,41 @@ button {
 p{
     margin-top:0;
     margin-bottom:0;
+    text-decoration: none;
+}
+.login-container {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+a.form-signin {
+    padding: 15px;
+    text-decoration: none;
+    color: #FEFAE0;
+    display: flex;
+    font-size: 18px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    background-color: #4caf50;
+}
+
+a.form-signin:hover {
+    background-color: #37943b;
+    transition: background-color 0.3s ease;
+}
+header {
+    background-color: #B9D7EA;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }

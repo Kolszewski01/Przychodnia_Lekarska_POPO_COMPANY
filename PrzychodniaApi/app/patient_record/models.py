@@ -9,7 +9,7 @@ class PatientRecord(models.Model):
     visit_notes = models.TextField()
     operations = models.TextField()
     vaccinations = models.TextField()
-    test_results = models
+    test_results = models.TextField()
 
 class Prescription(models.Model):
     patient_record = models.ForeignKey(PatientRecord, on_delete=models.CASCADE)

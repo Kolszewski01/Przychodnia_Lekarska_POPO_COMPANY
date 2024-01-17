@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Przychodnia Online</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
+</head>
+<body>
+    <header>
+        <div class="section">
+            <h2>Przychodnia online</h2>
+        </div>
+
+        <div class="section">
+            <h2>Numer telefonu: 623 772 612</h2>
+        </div>
+
+        <div class="section" >
+            <h2>Olsztyn, Słoneczna 54 </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+                Zalogowany użytkownik: <b>{{user.email}}</b>
+            {% else %}
+                <a href="{% url 'login' %}">zaloguj się</a>
+            {% endif %}
+            </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+
+            {% else %}
+                <a href="/register_patient/">rejestracja</a>
+            {% endif %}
+            </h2>
+        </div>
+    </header>
+    <main>
+
+            <nav>
+                <div id="map-container">
+                    <a href="api/patient_records/" onclick="redirectOnce(this)">Dokumentacja medyczna</a>
+                    <a href="">Zapisz się na wizytę </a>
+                    <a href="/" class="to_menu">Do menu </a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                  <button type="submit">Wyloguj</button>
+                </form>
+                </div>
+            </nav>
+    <div id="documentary">
+    <h1>Lista Rekordów Pacjenta</h1>
+    {% if patient_records %}
+            {% for record in patient_records %}
+                <div class="patient_records">
+                    <strong>Alergie: </strong>{{ record.allergies }}
+                </div>
+                <div class="patient_records">
+                    <strong>Historia medyczna: </strong>{{ record.medical_history }}
+                </div>
+                <div class="patient_records">
+                    <strong>Notatki z wizyt: </strong>{{ record.visit_notes }}
+                </div>
+                <div class="patient_records">
+                    <strong> Operacje: </strong>{{ record.operations}}
+                </div>
+                <div class="patient_records">
+                    <strong> Szczepionki: </strong>{{ record.vaccinations }}
+                </div>
+                <div class="patient_records">
+                    <strong> Wyniki testów: </strong>{{ record.test_results }}
+                </div>
+            {% endfor %}
+    </div>
+    {% else %}
+        <p>Brak dostępnych rekordów pacjenta.</p>
+    {% endif %}
+    </div>
+    </main>
+    <footer>
+        <img src="{% static 'images/popo.png' %}" width="80px" height="80px" >
+        <p>&copy; 2024 Przychodnia POPOCOMANY</p>
+        <img src="{% static 'images/doc.png' %}" width="80px" height="80px" >
+    </footer>
+
+
+</body>
+</html>
