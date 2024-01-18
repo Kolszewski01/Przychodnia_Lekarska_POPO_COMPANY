@@ -1,5 +1,7 @@
 from time import timezone
 
+from django.db.models import ExpressionWrapper, F
+from django.forms import DateTimeField
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.utils import timezone
 from django.views.decorators.http import require_GET
@@ -60,7 +62,12 @@ def generuj_daty_i_godziny(request):
 
 def wyswietl_terminy(request):
     wszystkie_terminy = Calendar.objects.all()
-    zarezerwowane_terminy = Reservation.objects.values_list('data', flat=True)
+    zarezerwowane_terminy = Reservation.objects.annotate(
+        datetime_field=ExpressionWrapper(
+            F('data'),
+            output_field=DateTimeField()
+        )
+    ).values_list('datetime_field', flat=True)
 
     dostepne_terminy = {}
     for termin in wszystkie_terminy:

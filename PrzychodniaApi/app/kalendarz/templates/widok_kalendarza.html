@@ -1,20 +1,20 @@
 {% load static %}
-{% load custom_filteres %} <!-- Poprawiona nazwa filtra -->
+{% load custom_filteres %} <!-- Upewnij się, że nazwa tego filtru jest poprawna -->
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Kalendarz Lekarza: {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'stylekalendarz.css' %}">
-    <script src="{% static 'sciptkalendarz.js' %}" defer></script> <!-- Poprawiona nazwa pliku -->
+    <script src="{% static 'sciptkalendarz.js' %}" defer></script> <!-- Upewnij się, że nazwa pliku jest poprawna -->
 </head>
 <body>
     <div id="schedule-container">
         <h1>Kalendarz Lekarza: {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}</h1>
 
         <!-- Przyciski do przewijania tygodni -->
-        <button id="prevWeekButton" onclick="changeWeek(-1)">&#9664; Poprzedni tydzień</button>
-        <button id="nextWeekButton" onclick="changeWeek(1)">Następny tydzień &#9654;</button>
+        <button id="prevWeekButton">&#9664; Poprzedni tydzień</button>
+        <button id="nextWeekButton">Następny tydzień &#9654;</button>
 
         <table id="schedule-table">
             <thead>
@@ -42,12 +42,10 @@
                     {% endfor %}
                 </tr>
                 {% endfor %}
+
             </tbody>
         </table>
     </div>
-    <script>
-        // Dodanie nasłuchiwaczy po załadowaniu DOM
-        document.addEventListener('DOMContentLoaded', addListeners);
-    </script>
+
 </body>
 </html>
