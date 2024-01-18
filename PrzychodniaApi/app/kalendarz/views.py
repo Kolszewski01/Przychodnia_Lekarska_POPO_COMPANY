@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Calendar, Reservation
 from .forms import DateForm
-import datetime
+from datetime import datetime, timedelta
 from rest_framework.response import Response
 from .serializers import CalendarSerializer
 from worker.models import Doctor
@@ -132,18 +132,18 @@ def get_calendar_data(request):
     if not date_str:
         return HttpResponseBadRequest('Brak daty w zapytaniu GET')
 
-    start_date = parse_date(date_str)
-
-    if not start_date:
+    try:
+        # Przetwarzanie daty na świadome strefy czasowej datetime
+        start_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        aware_start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
+        aware_end_date = timezone.make_aware(datetime.combine(start_date + timedelta(days=6), datetime.max.time()))
+    except ValueError:
         return HttpResponseBadRequest('Niepoprawny format daty')
 
-    # Ustaw zakres daty na cały tydzień
-    end_date = start_date + datetime.timedelta(days=6)
+    # Pobierz wpisy kalendarza dla danego zakresu dat
+    calendar_entries = Calendar.objects.filter(data__range=[aware_start_date, aware_end_date])
 
-    # Pobierz dane z modelu Calendar
-    calendar_entries = Calendar.objects.filter(data__range=[start_date, end_date])
-
-    # Przygotuj dane do odpowiedzi
+    # Przygotowanie danych do odpowiedzi JSON
     data = [{'day': entry.data.weekday(), 'time': entry.data.strftime('%H:%M')} for entry in calendar_entries]
 
     return JsonResponse(data, safe=False)
