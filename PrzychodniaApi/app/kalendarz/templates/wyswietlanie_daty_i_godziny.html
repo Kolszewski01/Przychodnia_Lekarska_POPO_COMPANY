@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'stylekalendarz.css' %}">
         <script src="{% static 'sciptkalendarz.js' %}" defer></script>
 </head>
+</head>
 <body>
     <div id="schedule-container">
         <!-- Przyciski do przewijania tygodni -->
@@ -24,20 +25,17 @@
                 </tr>
             </thead>
             <tbody>
-                {% for hour in godziny %}
-                <tr>
-                    <td>{{ hour }}</td>
-                    {% for day in dni_tygodnia %}
-                    <td>
-                        {% if hour in dostepne_terminy %}
-                        <button class="time-slot available" data-hour="{{ hour }}" data-day="{{ day }}">Dostępne</button>
-                        {% else %}
-                        <button class="time-slot unavailable" data-hour="{{ hour }}" data-day="{{ day }}">Niedostępne</button>
-                        {% endif %}
-                    </td>
+                <!-- Zakładam, że 'godziny' to lista godzin w formacie HH:MM -->
+                    {% for hour in godziny %}
+                        <tr>
+                            <td>{{ hour|replace_colon }}</td>
+                            {% for day in dni_tygodnia %}
+                            <td>
+                                <button class="time-slot" id="slot-{{ day }}-{{ hour|replace_colon }}"></button>
+                            </td>
+                            {% endfor %}
+                        </tr>
                     {% endfor %}
-                </tr>
-                {% endfor %}
             </tbody>
         </table>
     </div>

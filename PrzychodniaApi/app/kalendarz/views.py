@@ -1,5 +1,5 @@
 from time import timezone
-
+from datetime import datetime, timedelta, date, time
 from django.db.models import ExpressionWrapper, F
 from django.forms import DateTimeField
 from django.http import JsonResponse, HttpResponseBadRequest
@@ -9,11 +9,11 @@ from rest_framework.views import APIView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Calendar, Reservation
 from .forms import DateForm
-from datetime import datetime, timedelta
 from rest_framework.response import Response
 from .serializers import CalendarSerializer
 from worker.models import Doctor
 from django.utils.dateparse import parse_date
+
 
 
 
@@ -28,28 +28,27 @@ def generuj_daty_i_godziny(request):
             doctor = get_object_or_404(Doctor, pk=doctor_id)  # Pobierz obiekt lekarza
 
             # Ustal datę początkową
-            start_date = datetime.date.today()
+            start_date = date.today()
 
             # Ustal interwał co pół godziny
-            interval = datetime.timedelta(minutes=30)
+            interval = timedelta(minutes=30)
 
             current_date = start_date
             while current_date <= end_date:
                 if current_date.weekday() < 5:  # Sprawdź, czy to dzień od poniedziałku do piątku (0-4)
-                    godzina = datetime.datetime.combine(current_date, datetime.time(8, 0))
+                    godzina = datetime.combine(current_date, time(8, 0))
                     godzina = timezone.make_aware(godzina)  # Poprawnie użyj make_aware
-                    end_of_day = timezone.make_aware(
-                        datetime.datetime.combine(current_date, datetime.time(17, 30)))  # Ostatnia godzina (17:30)
+                    end_of_day = timezone.make_aware(datetime.combine(current_date, time(17, 30)))  # Ostatnia godzina (17:30)
 
                     while godzina <= end_of_day:
                         nowy_rekord = Calendar(data=godzina, doctor=doctor)
                         nowy_rekord.save()
                         godzina += interval
-                        if godzina.time() > datetime.time(17, 30):  # Zapobieganie tworzeniu godziny poza zakresem
+                        if godzina.time() > time(17, 30):  # Zapobieganie tworzeniu godziny poza zakresem
                             break
-                        godzina = timezone.make_aware(datetime.datetime.combine(current_date, godzina.time()))
+                        godzina = timezone.make_aware(datetime.combine(current_date, godzina.time()))
 
-                current_date += datetime.timedelta(days=1)
+                current_date += timedelta(days=1)
 
             # Przekierowanie po utworzeniu terminów
             return redirect('generuj_daty_i_godziny')  # Zmień na odpowiednią nazwę widoku
@@ -69,14 +68,11 @@ def wyswietl_terminy(request):
         )
     ).values_list('datetime_field', flat=True)
 
-    dostepne_terminy = {}
+    dostepne_terminy = []
+
     for termin in wszystkie_terminy:
-        day = termin.data.weekday()
-        time = termin.data.strftime('%H:%M')
         if termin.data not in zarezerwowane_terminy:
-            if day not in dostepne_terminy:
-                dostepne_terminy[day] = []
-            dostepne_terminy[day].append(time)
+            dostepne_terminy.append(termin)
 
     godziny = [f"{h:02d}:{m:02d}" for h in range(8, 18) for m in (0, 30) if not (h == 17 and m == 30)]
     dni_tygodnia = range(5)
@@ -143,7 +139,9 @@ def get_calendar_data(request):
         # Przetwarzanie daty na świadome strefy czasowej datetime
         start_date = datetime.strptime(date_str, '%Y-%m-%d').date()
         aware_start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
-        aware_end_date = timezone.make_aware(datetime.combine(start_date + timedelta(days=6), datetime.max.time()))
+
+        # Aby uwzględnić cały tydzień roboczy, zmieniamy zakres na 5 dni (od poniedziałku do piątku)
+        aware_end_date = timezone.make_aware(datetime.combine(start_date + timedelta(days=4), datetime.max.time()))
     except ValueError:
         return HttpResponseBadRequest('Niepoprawny format daty')
 
