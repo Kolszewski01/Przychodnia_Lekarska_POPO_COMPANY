@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formularz daty</title>
+</head>
+<body>
+<form method="post" action="{% url 'generuj_daty_i_godziny' %}">
+    {% csrf_token %}
+    <label for="doctor">Wybierz lekarza:</label>
+    <select name="doctor" id="doctor">
+        {% for doctor in doctors %}
+            <option value="{{ doctor.id }}">{{ doctor.first_name }} {{ doctor.last_name }}</option>
+        {% endfor %}
+    </select>
+    {{ form.as_p }}
+    <button type="submit">Generuj daty i godziny</button>
+</form>
+
+
+<form action="{% url 'usun_wszystkie_wpisy' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Usuń wszystkie wpisy</button>
+</form>
+
+
+</body>
+</html>

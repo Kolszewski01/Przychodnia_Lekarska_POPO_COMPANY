@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Harmonogram Tygodniowy</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'stylekalendarz.css' %}">
+        <script src="{% static 'sciptkalendarz.js' %}" defer></script>
+</head>
+</head>
+<body>
+    <div id="schedule-container">
+        <!-- Przyciski do przewijania tygodni -->
+        <button onclick="changeWeek(-1)">&#9664; Poprzedni tydzień</button>
+        <button onclick="changeWeek(1)">Następny tydzień &#9654;</button>
+
+        <table id="schedule-table">
+            <thead>
+                <tr>
+                    <th>Godzina</th>
+                    <th>Poniedziałek</th>
+                    <th>Wtorek</th>
+                    <th>Środa</th>
+                    <th>Czwartek</th>
+                    <th>Piątek</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Zakładam, że 'godziny' to lista godzin w formacie HH:MM -->
+                    {% for hour in godziny %}
+                        <tr>
+                            <td>{{ hour|replace_colon }}</td>
+                            {% for day in dni_tygodnia %}
+                            <td>
+                                <button class="time-slot" id="slot-{{ day }}-{{ hour|replace_colon }}"></button>
+                            </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
