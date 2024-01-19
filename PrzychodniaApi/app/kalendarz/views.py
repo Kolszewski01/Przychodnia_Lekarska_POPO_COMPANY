@@ -127,28 +127,33 @@ def widok_kalendarza(request, doctor_id):
     })
 
 
+
 @require_GET
 def get_calendar_data(request):
-    # Pobierz datę z zapytania GET
     date_str = request.GET.get('date')
+    doctor_id = request.GET.get('doctor_id')  # Pobranie ID lekarza z zapytania GET
 
-    if not date_str:
-        return HttpResponseBadRequest('Brak daty w zapytaniu GET')
+    if not date_str or not doctor_id:
+        return JsonResponse({'error': 'Brak daty lub ID lekarza w zapytaniu GET'}, status=400)
 
     try:
-        # Przetwarzanie daty na świadome strefy czasowej datetime
         start_date = datetime.strptime(date_str, '%Y-%m-%d').date()
         aware_start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
-
-        # Aby uwzględnić cały tydzień roboczy, zmieniamy zakres na 5 dni (od poniedziałku do piątku)
         aware_end_date = timezone.make_aware(datetime.combine(start_date + timedelta(days=4), datetime.max.time()))
     except ValueError:
         return HttpResponseBadRequest('Niepoprawny format daty')
 
-    # Pobierz wpisy kalendarza dla danego zakresu dat
-    calendar_entries = Calendar.objects.filter(data__range=[aware_start_date, aware_end_date])
+    # Pobranie obiektu lekarza
+    doctor = get_object_or_404(Doctor, pk=doctor_id)
 
-    # Przygotowanie danych do odpowiedzi JSON
-    data = [{'day': entry.data.weekday(), 'time': entry.data.strftime('%H:%M')} for entry in calendar_entries]
+    # Filtrowanie wpisów kalendarza według lekarza i daty
+    calendar_entries = Calendar.objects.filter(data__range=[aware_start_date, aware_end_date], doctor=doctor)
+    data = [
+        {
+            'day': entry.data.weekday(),
+            'time': entry.data.strftime('%H-%M')  # Format 'HH-MM'
+        }
+        for entry in calendar_entries
+    ]
 
     return JsonResponse(data, safe=False)
