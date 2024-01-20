@@ -42,21 +42,72 @@
 <!-- Main content -->
     {% if user.is_authenticated %}
         {% if user.is_staff %}
-            <div>
+        <main>
+            <nav>
+                <a href="register/doctor"> Zarejestruj lekarza</a>
+                <a href="register/secretary"> Zarejestruj sekretarkę</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                   <button type="submit">Wyloguj</button>
                 </form>
-            <p> Morbi ullamcorper eget massa quis pulvinar. Nulla venenatis pellentesque ullamcorper.
-                Phasellus ac felis ultricies enim porta consectetur eget ut enim. Vivamus vestibulum facilisis fringilla.
-                Etiam maximus elit nec magna efficitur, sit amet rhoncus neque placerat. Suspendisse ac elit quis enim lacinia dapibus.
-                In sit amet nulla nunc. Donec vitae efficitur massa, eu dignissim arcu.
-                Donec hendrerit mollis dui, non maximus felis sollicitudin ac. Quisque orci leo, posuere nec scelerisque pretium,
-                vestibulum imperdiet turpis. Aliquam quis ligula mi. Aenean massa quam, vulputate
-                eu lacinia vel, pulvinar in turpis. Nullam faucibus, sem et fringilla pellentesque, ex justo pharetra eros,
-                ut dapibus risus lacus eu nisi. Aliquam ligula nulla, efficitur ac magna ac, faucibus placerat metus.</p>
+            </nav>
+            <div id="documentary">
+                <div class="patient_records">
+                    <p>Liczba zarejestrowanych lekarzy: {{ num_doctors }}</p>
+                </div>
+                <div class="patient_records">
+                    <p>Liczba zarejestrowanych sekretarek: {{ num_secretaries }}</p>
+                </div>
+                <div class="patient_records">
+                    <p>Liczba zarejestrowanych pacjentów: {{ num_patients }}</p>
+                </div>
             </div>
-        {% else %}
+        </main>
+        {% elif user.role == 'doctor' %}
+       <main>
+            <nav>
+                <div id="map-container">
+                    <a href="doctor_register/">Dokumentacja medyczna</a>
+                    <a href="">Zapisz się na wizytę </a>
+                    <a href="{% url 'change_password' %}">Zmień hasło</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                  <button type="submit">Wyloguj</button>
+                </form>
+                </div>
+            </nav>
+            <div class="content">
+                <div id="review">
+                    <p>
+                        <h2>O nas</h2>
+                        to jest lekarz
+                    </p>
+                </div>
+            </div>
+        </main>
+        {% elif user.role == "secretary" %}
+        <main>
+            <nav>
+                <div id="map-container">
+                    <a href="doctor_register/">Dokumentacja medyczna</a>
+                    <a href="">Zapisz się na wizytę </a>
+                    <a href="{% url 'change_password' %}">Zmień hasło</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                  <button type="submit">Wyloguj</button>
+                </form>
+                </div>
+            </nav>
+            <div class="content">
+                <div id="review">
+                    <p>
+                        <h2>O nas</h2>
+                        to jest SEKRETARKA
+                    </p>
+                </div>
+            </div>
+        </main>
+        {% elif user.role == "patient" %}
            <main>
             <nav>
                 <div id="map-container">
@@ -117,7 +168,7 @@
             </div>
                 <div>
                     <h2>Nasi specjaliści</h2>
-                    <div id="doctors-slider">
+                    <div>
                         {% for i in "12345" %}
                             {% with doctor_image='images/profile_images/doctor' %}
                                 <img src="{% static doctor_image|stringformat:"s" %}{{ i }}.png" width="200px" height="200px">

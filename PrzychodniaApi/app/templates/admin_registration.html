@@ -1,15 +1,17 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{% static 'rejestracja.css' %}">
 </head>
 <body>
-  <h2>Rejestracja administratora</h2>
-  <form method="post" action="{% url 'admin_register' %}">
+  <h2>Rejestracja lekarza</h2>
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Zarejestruj się</button>
+    <button type="submit">Zarejestruj lekarza</button>
   </form>
 </body>
 </html>
