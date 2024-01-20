@@ -14,20 +14,38 @@ from .serializers import CalendarSerializer
 from worker.models import Doctor
 from django.utils.dateparse import parse_date
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.decorators import login_required
+from django.utils.timezone import make_aware, is_naive
+from django.utils.dateparse import parse_datetime
+import json
 
 
 
+@login_required
 @csrf_exempt
 def create_reservation(request):
     if request.method == 'POST':
-        data = request.POST
-        # Przyjmij i przetwórz dane rezerwacji...
-        reservation = Reservation.objects.create(
-            data=data['data'],
-            patient=request.user.patient
-        )
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            reservation_datetime = parse_datetime(data.get('data'))
+
+            if reservation_datetime and is_naive(reservation_datetime):
+                reservation_datetime = make_aware(reservation_datetime)
+
+            # Cofnięcie rezerwacji o 3 dni
+            adjusted_reservation_datetime = reservation_datetime + timedelta(days=4)
+
+            reservation = Reservation.objects.create(
+                data=adjusted_reservation_datetime,
+                patient=request.user.patient
+            )
+            return JsonResponse({'status': 'success'})
+        except KeyError:
+            return JsonResponse({'status': 'error'}, status=400)
+
+    return JsonResponse({'status': 'error'}, status=405)
 
 def generuj_daty_i_godziny(request):
     doctors = Doctor.objects.all()  # Dodaj listę lekarzy do kontekstu
