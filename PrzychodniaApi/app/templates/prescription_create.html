@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'rejestracja.css' %}">
+</head>
+<body>
+
+<h2>Dodaj nową receptę</h2>
+
+  {% if success_message %}
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      // Skrypt SweetAlert2
+      Swal.fire({
+        icon: 'success',
+        title: 'Pomyślnie dodano receptę!',
+        showConfirmButton: false,
+        timer: 1500,
+        background: '#B9D7EA'
+      });
+    </script>
+  {% endif %}
+
+  <form method="post" action="{% url 'prescription_create' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Dodaj receptę</button>
+  </form>
+
+
+</body>
+</html>

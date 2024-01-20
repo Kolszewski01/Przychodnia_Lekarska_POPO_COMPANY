@@ -20,8 +20,8 @@ from django.urls import path, include
 from .views import home
 from patient.views import register_patient
 from user.views import CustomLogoutView, CustomLoginView
-
-from worker.views import register_doctor, register_secretary, change_password
+from worker.views import register_doctor, register_secretary, change_password, MedicalRecordsView, EditMedicalRecordView
+from patient_record.views import PrescriptionCreateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,8 +31,11 @@ urlpatterns = [
     path('register_patient/', register_patient, name='register_patient'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('kalendarz/', include('kalendarz.urls')),
-    path('api/', include('patient_record.urls')),
+    path('api/', include('patient_record.urls'), name='patient_record'),
     path('register/doctor/', register_doctor, name='register_doctor'),
     path('register/secretary/', register_secretary, name='register_secretary'),
     path('change_password/', change_password, name='change_password'),
+    path('prescription/create/', PrescriptionCreateView.as_view(), name='prescription_create'),
+    path('medical_records/', MedicalRecordsView.as_view(), name='medical_records'),
+    path('edit_medical_record/<int:record_id>/', EditMedicalRecordView.as_view(), name='edit_medical_record'),
 ]

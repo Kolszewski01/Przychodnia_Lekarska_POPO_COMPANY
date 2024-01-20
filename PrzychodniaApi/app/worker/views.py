@@ -1,12 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeView
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import os
+
+from django.views import View
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
 
 from .forms import DoctorRegistrationForm, SecretaryRegistrationForm
+from patient.models import Patient
+from patient_record.models import PatientRecord
+
+from patient_record.forms import PatientRecordForm
 
 
 def doctors_view(request):
@@ -52,3 +58,38 @@ def change_password(request):
         form = PasswordChangeView.as_view()(request)
 
     return render(request, 'change_password.html', {'form': form.context_data['form']})
+
+class MedicalRecordsView(View):
+    template_name = 'medical_records.html'
+
+    def get(self, request, *args, **kwargs):
+        pesel = request.GET.get('pesel', '')
+        patient = None
+        medical_records = None
+
+        if pesel:
+            patient = get_object_or_404(Patient, pesel=pesel)
+            medical_records = PatientRecord.objects.filter(patient=patient)
+
+        return render(request, self.template_name, {'patient': patient, 'medical_records': medical_records, 'searched_pesel': pesel})
+
+class EditMedicalRecordView(View):
+    template_name = 'edit_medical_record.html'
+
+    def get(self, request, *args, **kwargs):
+        record_id = kwargs.get('record_id')
+        record = get_object_or_404(PatientRecord, id=record_id)
+        form = PatientRecordForm(instance=record)
+        self.record = record
+        return render(request, self.template_name, {'form': form, 'record': record})
+
+    def post(self, request, *args, **kwargs):
+        record_id = kwargs.get('record_id')
+        record = get_object_or_404(PatientRecord, id=record_id)
+        form = PatientRecordForm(request.POST, instance=record)
+
+        if form.is_valid():
+            form.save()
+            return redirect('medical_records')
+
+        return render(request, self.template_name, {'form': form, 'record': record})

@@ -1,6 +1,11 @@
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views import View
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .models import Patient, PatientRecord, Prescription
+from patient.models import Patient
+from .forms import PrescriptionForm
+from .models import PatientRecord, Prescription
 from .serializers import PatientRecordSerializer, PrescriptionSerializer
 from django.views.generic import ListView
 from rest_framework import permissions
@@ -15,17 +20,6 @@ class IsWorker(permissions.BasePermission):
         # Sprawdź, czy użytkownik ma rolę worker
         return request.user.is_worker
 
-
-# class PatientRecordListView(generics.ListAPIView):
-#     serializer_class = PatientRecordSerializer
-#     permission_classes = [IsAuthenticated]
-#
-#     def get_queryset(self):
-#         return PatientRecord.objects.filter(patient=self.request.user.patient)
-#
-#     def list(self, request, *args, **kwargs):
-#         patient_records = self.get_queryset()
-#         return render(request, 'index.html', {'patient_records': patient_records})
 class PatientRecordListView(ListView):
     model = PatientRecord
     template_name = 'patient_records_list.html'
@@ -46,15 +40,34 @@ class PatientRecordAdminView(generics.ListCreateAPIView):
         # Przypisz pacjenta do nowego rekordu
         serializer.save(patient=self.request.user.patient)
 
-class PrescriptionListView(generics.ListAPIView):
-    serializer_class = PrescriptionSerializer
-    permission_classes = [IsAuthenticated]  # Make sure the user is authenticated
+class PatientPrescriptionsListView(ListView):
+    model = Prescription
+    template_name = 'patient_prescriptions_list.html'
+    context_object_name = 'prescriptions'
+    ordering = ['-prescribed_date']
 
     def get_queryset(self):
-        # Return only prescriptions related to the logged-in patient
         return Prescription.objects.filter(patient_record__patient=self.request.user.patient)
 
 
+class PrescriptionCreateView(View):
+    template_name = 'prescription_create.html'
+
+    def get(self, request, *args, **kwargs):
+        form = PrescriptionForm()
+        return render(request, self.template_name, {'form': form, 'success_message': None})
+
+    def post(self, request, *args, **kwargs):
+        form = PrescriptionForm(request.POST)
+
+        if form.is_valid():
+            prescription = form.save(commit=False)
+            prescription.save()
+
+            success_message = 'Pomyślnie dodano receptę!'
+            return render(request, self.template_name, {'form': PrescriptionForm(), 'success_message': success_message})
+
+        return render(request, self.template_name, {'form': form, 'success_message': None})
 class PrescriptionAdminView(generics.ListCreateAPIView):
     serializer_class = PrescriptionSerializer
     permission_classes = [IsAuthenticated, IsWorker]
@@ -66,3 +79,4 @@ class PrescriptionAdminView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Przypisz pacjenta do nowego rekordu na podstawie relacji z PatientRecord
         serializer.save(patient_record__patient=self.request.user.patient)
+

@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+<header>
+        <div class="section">
+            <h2>Przychodnia online</h2>
+        </div>
+
+        <div class="section">
+            <h2>Numer telefonu: 623 772 612</h2>
+        </div>
+
+        <div class="section" >
+            <h2>Olsztyn, Słoneczna 54 </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+                Zalogowany użytkownik: <b>{{user.email}}</b>
+            {% else %}
+                <a href="{% url 'login' %}">zaloguj się</a>
+            {% endif %}
+            </h2>
+        </div>
+</header>
+  <main>
+    <nav>
+      <div id="map-container">
+        <a href="api/patient_records/" onclick="redirectOnce(this)">Dokumentacja medyczna</a>
+        <a href="">Zapisz się na wizytę</a>
+        <a href="/" class="to_menu">Do menu</a>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit">Wyloguj</button>
+        </form>
+      </div>
+    </nav>
+    <div class="section-header">
+        <h2>Twoje recepty</h2>
+
+    <div class="prescriptions-container">
+        {% for prescription in prescriptions %}
+            <div class="prescription-item">
+                <strong>{{ prescription.medication_name }}</strong> ({{ prescription.prescribed_date|date:"F j, Y" }})
+                <div class="prescription-detail">
+                    Dawka: {{ prescription.dosage }},
+                    Częstotliwość: {{ prescription.frequency }},
+                    Czas trwania: {{ prescription.duration }}
+                </div>
+                <div class="prescription-detail">
+                    Instrukcje dodatkowe: {{ prescription.additional_instructions }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    </div>
+  </main>
+  <footer>
+    <img src="{% static 'images/popo.png' %}" width="80px" height="80px">
+    <p>&copy; 2024 Przychodnia POPOCOMANY</p>
+    <img src="{% static 'images/doc.png' %}" width="80px" height="80px">
+  </footer>
+</body>
+</html>

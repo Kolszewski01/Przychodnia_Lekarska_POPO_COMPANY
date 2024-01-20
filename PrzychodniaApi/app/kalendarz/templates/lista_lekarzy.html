@@ -27,7 +27,7 @@
     <ul>
         {% for doctor in doctors %}
             <li>
-                <img src="{{ doctor.profile_image.url }}" alt="Zdjęcie {{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo">
+                 {{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo"
                 <a href="{% url 'nazwa_widoku_kalendarza' doctor.id %}" class="doctor-link">
                     {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}
                 </a>

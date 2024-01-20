@@ -11,6 +11,9 @@ class PatientRecord(models.Model):
     vaccinations = models.TextField()
     test_results = models.TextField()
 
+    def __str__(self):
+        return str(self.patient)
+
 class Prescription(models.Model):
     patient_record = models.ForeignKey(PatientRecord, on_delete=models.CASCADE)
     medication_name = models.CharField(max_length=255)

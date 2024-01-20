@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import Doctor, Secretary
 
-
 class DoctorRegistrationForm(UserCreationForm):
     specialization = forms.CharField(max_length=120)
     room_number = forms.CharField(max_length=10, label='Room Number')

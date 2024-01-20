@@ -67,8 +67,9 @@
        <main>
             <nav>
                 <div id="map-container">
-                    <a href="doctor_register/">Dokumentacja medyczna</a>
-                    <a href="">Zapisz się na wizytę </a>
+                    <a href="{% url 'medical_records' %}">Dokumentacja medyczna</a>
+{#                    <a href="{% url 'edit_medical_record' %}">Edytuj Dokumentacje medyczną</a>#}
+                    <a href="{% url 'prescription_create' %}">Wypisz receptę</a>
                     <a href="{% url 'change_password' %}">Zmień hasło</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
@@ -113,6 +114,7 @@
                 <div id="map-container">
                     <a href="api/patient_records/">Dokumentacja medyczna</a>
                     <a href="">Zapisz się na wizytę </a>
+                    <a href="{% url 'prescription-list' %}">Zobacz Recepty</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                   <button type="submit">Wyloguj</button>

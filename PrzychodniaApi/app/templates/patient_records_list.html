@@ -43,9 +43,9 @@
 
             <nav>
                 <div id="map-container">
-                    <a href="api/patient_records/" onclick="redirectOnce(this)">Dokumentacja medyczna</a>
-                    <a href="">Zapisz się na wizytę </a>
                     <a href="/" class="to_menu">Do menu </a>
+                    <a href="">Zapisz się na wizytę </a>
+                    <a href="{% url 'prescription-list' %}">Zobacz Recepty</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                   <button type="submit">Wyloguj</button>

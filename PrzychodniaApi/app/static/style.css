@@ -190,3 +190,26 @@ nav button:hover {
     box-sizing: border-box;
     border-radius: 10px;
 }
+.section-header {
+    text-align: center;
+    margin: 20px 0; /* Ustaw odpowiedni margines na górze i na dole */
+}
+
+.prescriptions-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Wyśrodkuj kontener na osi poziomej */
+    align-items: center; /* Wyśrodkuj kontener na osi pionowej */
+    gap: 20px; /* odstęp między receptami */
+}
+
+.prescription-item {
+    width: calc(33.33% - 20px); /* 33.33% szerokości, aby pomieścić 3 elementy w rzędzie */
+    background-color: #f5f5f5; /* Kolor tła recepty */
+    padding: 15px;
+    border: 1px solid #ddd; /* Dodaj obramowanie */
+}
+
+.prescription-detail {
+    margin-top: 10px;
+}
