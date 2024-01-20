@@ -11,7 +11,6 @@ from django.urls import reverse_lazy
 from .forms import DoctorRegistrationForm, SecretaryRegistrationForm
 from patient.models import Patient
 from patient_record.models import PatientRecord
-
 from patient_record.forms import PatientRecordForm
 
 
@@ -51,9 +50,9 @@ def register_secretary(request):
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeView.as_view()(request)
-        if form.status_code == 302:  # 302 to kod odpowiedzi przekierowania
+        if form.status_code == 302:
             messages.success(request, 'Pomyślnie zmieniono hasło.')
-            return redirect('home')  # Przekieruj do widoku home po pomyślnej zmianie hasła
+            return redirect('home')
     else:
         form = PasswordChangeView.as_view()(request)
 

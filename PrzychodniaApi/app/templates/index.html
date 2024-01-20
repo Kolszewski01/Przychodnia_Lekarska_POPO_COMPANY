@@ -113,7 +113,7 @@
             <nav>
                 <div id="map-container">
                     <a href="api/patient_records/">Dokumentacja medyczna</a>
-                    <a href="">Zapisz się na wizytę </a>
+                    <a href="{% url 'lista_lekarzy' %}">Zapisz się na wizytę </a>
                     <a href="{% url 'prescription-list' %}">Zobacz Recepty</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
