@@ -55,25 +55,8 @@
     </div>
 
     <script>
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Czy ten ciasteczko zawiera nazwę, której szukamy?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-
         const godziny = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"];
-        const dni_tygodnia = [1, 2, 3, 4, 5];
+        const dni_tygodnia = [1, 2, 3, 4, 5]; // Uwaga: dni tygodnia są mapowane zgodnie z Pythonem, gdzie 0 to poniedziałek
         let formattedDate;
         const currentDate = new Date();
         let selectedDoctorId = {{ doctor.id }};
@@ -92,7 +75,8 @@
 
         function updateHeaderDates() {
             const startDate = new Date(currentDate);
-            startDate.setDate(currentDate.getDate() - currentDate.getDay() + 1);
+            // Przesuń startDate o 7 dni do przodu
+            startDate.setDate(startDate.getDate() + 7 - startDate.getDay() + 1);
 
             for (let i = 0; i < 5; i++) {
                 const dayElement = document.getElementById(`day-${i}`);
@@ -105,7 +89,6 @@
         function updateCalendarView() {
             formattedDate = formatDateForURL(currentDate);
             const url = `/kalendarz/api/get_calendar_data/?date=${formattedDate}&doctor_id=${selectedDoctorId}`;
-            console.log(url);
             fetch(url)
                 .then(response => response.json())
                 .then(newData => {
@@ -131,7 +114,7 @@
         }
 
         function makeReservation(hour, day) {
-            fetch('/create_reservation/', {
+            fetch('http://localhost:8000/kalendarz/create_reservation/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -147,6 +130,9 @@
                 if (data.status === 'success') {
                     updateCalendarView();
                 }
+            })
+            .catch(error => {
+                console.error('Błąd:', error);
             });
         }
 
@@ -162,8 +148,6 @@
 
                 for (let day = 0; day < 5; day++) {
                     const cell = document.createElement('td');
-                    const slotId = `slot-${day}-${hour.replace(':', '-')}`;
-
                     const slotData = data.find(entry => entry.day === day && entry.time === hour.replace(':', '-'));
 
                     const button = document.createElement('button');
@@ -182,6 +166,21 @@
             }
         }
 
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         document.getElementById('prevWeekButton').addEventListener('click', function() {
             currentDate.setDate(currentDate.getDate() - 7);
             updateHeaderDates();
@@ -197,5 +196,6 @@
         updateHeaderDates();
         updateCalendarView();
     </script>
+
 </body>
 </html>
