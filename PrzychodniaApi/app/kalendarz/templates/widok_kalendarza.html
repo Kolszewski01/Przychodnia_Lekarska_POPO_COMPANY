@@ -1,16 +1,15 @@
 {% load static %}
-{% load custom_filteres %} <!-- Upewnij się, że nazwa tego filtru jest poprawna -->
+{% load custom_filteres %}
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Kalendarz Lekarza: {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}</title>
+    <title>Kalendarz Lekarza: Imię Nazwisko</title>
     <link rel="stylesheet" type="text/css" href="{% static 'stylekalendarz.css' %}">
-    <script src="{% static 'sciptkalendarz.js' %}" defer></script> <!-- Upewnij się, że nazwa pliku jest poprawna -->
 </head>
 <body>
     <div id="schedule-container">
-        <h1>Kalendarz Lekarza: {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}</h1>
+        <h1>Kalendarz Lekarza: Imię Nazwisko</h1>
 
         <!-- Przyciski do przewijania tygodni -->
         <button id="prevWeekButton">&#9664; Poprzedni tydzień</button>
@@ -33,19 +32,170 @@
                     <td>{{ hour }}</td>
                     {% for day in dni_tygodnia %}
                     <td id="slot-{{ day }}-{{ hour }}">
-                        {% if hour in dostepne_terminy|default_if_none:0|get_item:day %}
+                        {% with day_slots=dostepne_terminy|default_if_none:0|get_item:day %}
+                        {% if hour in day_slots %}
                         <button class="time-slot available">Dostępne</button>
                         {% else %}
                         <button class="time-slot unavailable">Niedostępne</button>
                         {% endif %}
+                        {% endwith %}
                     </td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
-
             </tbody>
         </table>
     </div>
 
+    <!-- Modal Potwierdzenia Rezerwacji -->
+    <div id="reservationModal" style="display:none;">
+        <p>Czy na pewno chcesz się zapisać na tę wizytę?</p>
+        <button id="confirmReservation">Tak</button>
+        <button id="cancelReservation">Nie</button>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Czy ten ciasteczko zawiera nazwę, której szukamy?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+        const godziny = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"];
+        const dni_tygodnia = [1, 2, 3, 4, 5];
+        let formattedDate;
+        const currentDate = new Date();
+        let selectedDoctorId = {{ doctor.id }};
+
+        function formatDateForURL(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function formatDate(date) {
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('pl-PL', options);
+        }
+
+        function updateHeaderDates() {
+            const startDate = new Date(currentDate);
+            startDate.setDate(currentDate.getDate() - currentDate.getDay() + 1);
+
+            for (let i = 0; i < 5; i++) {
+                const dayElement = document.getElementById(`day-${i}`);
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                dayElement.textContent = formatDate(date);
+            }
+        }
+
+        function updateCalendarView() {
+            formattedDate = formatDateForURL(currentDate);
+            const url = `/kalendarz/api/get_calendar_data/?date=${formattedDate}&doctor_id=${selectedDoctorId}`;
+            console.log(url);
+            fetch(url)
+                .then(response => response.json())
+                .then(newData => {
+                    generateCalendarSlots(newData);
+                })
+                .catch(error => {
+                    console.error('Błąd przy pobieraniu danych kalendarza:', error);
+                });
+        }
+
+        function handleAvailableClick(hour, day) {
+            const modal = document.getElementById('reservationModal');
+            modal.style.display = 'block';
+
+            document.getElementById('confirmReservation').onclick = function() {
+                makeReservation(hour, day);
+                modal.style.display = 'none';
+            };
+
+            document.getElementById('cancelReservation').onclick = function() {
+                modal.style.display = 'none';
+            };
+        }
+
+        function makeReservation(hour, day) {
+            fetch('/create_reservation/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    data: `${formattedDate} ${hour}`,
+                    doctor_id: selectedDoctorId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    updateCalendarView();
+                }
+            });
+        }
+
+        function generateCalendarSlots(data) {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            for (const hour of godziny) {
+                const row = document.createElement('tr');
+                const hourCell = document.createElement('td');
+                hourCell.textContent = hour;
+                row.appendChild(hourCell);
+
+                for (let day = 0; day < 5; day++) {
+                    const cell = document.createElement('td');
+                    const slotId = `slot-${day}-${hour.replace(':', '-')}`;
+
+                    const slotData = data.find(entry => entry.day === day && entry.time === hour.replace(':', '-'));
+
+                    const button = document.createElement('button');
+                    button.textContent = slotData ? 'Dostępne' : 'Niedostępne';
+                    button.classList.add(slotData ? 'available' : 'unavailable');
+
+                    if (slotData) {
+                        button.addEventListener('click', () => handleAvailableClick(hour, day));
+                    }
+
+                    cell.appendChild(button);
+                    row.appendChild(cell);
+                }
+
+                tbody.appendChild(row);
+            }
+        }
+
+        document.getElementById('prevWeekButton').addEventListener('click', function() {
+            currentDate.setDate(currentDate.getDate() - 7);
+            updateHeaderDates();
+            updateCalendarView();
+        });
+
+        document.getElementById('nextWeekButton').addEventListener('click', function() {
+            currentDate.setDate(currentDate.getDate() + 7);
+            updateHeaderDates();
+            updateCalendarView();
+        });
+
+        updateHeaderDates();
+        updateCalendarView();
+    </script>
 </body>
 </html>

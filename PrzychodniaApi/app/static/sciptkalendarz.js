@@ -25,8 +25,6 @@ function updateCalendarView(doctorId) {
         });
 }
 
-
-
 function updateCalendarSlots(data) {
     // Najpierw czyścimy wszystkie sloty
     document.querySelectorAll('.time-slot').forEach(slot => {
@@ -48,13 +46,11 @@ function updateCalendarSlots(data) {
     });
 }
 
-
-
+// Funkcja do przewijania tygodni w bok
 function changeWeek(direction) {
     currentWeekStartDate.setDate(currentWeekStartDate.getDate() + (direction * 7));
-    console.log("Nowa data początkowa tygodnia: ", currentWeekStartDate.toISOString().split('T')[0]);
     updateHeaderDates();
-    updateCalendarView();
+    updateCalendarView(doctorId); // Aktualizacja kalendarza z wybranym lekarzem
 }
 
 function updateHeaderDates() {
@@ -69,6 +65,14 @@ function updateHeaderDates() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Początkowe pobranie kalendarza z wybranym lekarzem
+    const doctorSelect = document.getElementById('doctorSelect');
+    const initialSelectedDoctorId = doctorSelect.value;
+
+    updateHeaderDates();
+    updateCalendarView(initialSelectedDoctorId);
+
+    // Obsługa przycisków do przewijania tygodni
     document.getElementById('prevWeekButton').addEventListener('click', function() {
         changeWeek(-1);
     });
@@ -76,6 +80,4 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nextWeekButton').addEventListener('click', function() {
         changeWeek(1);
     });
-    updateHeaderDates();
-    updateCalendarView();
 });

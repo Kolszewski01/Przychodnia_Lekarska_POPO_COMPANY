@@ -13,9 +13,21 @@ from rest_framework.response import Response
 from .serializers import CalendarSerializer
 from worker.models import Doctor
 from django.utils.dateparse import parse_date
+from django.views.decorators.csrf import csrf_exempt
 
 
 
+@csrf_exempt
+def create_reservation(request):
+    if request.method == 'POST':
+        data = request.POST
+        # Przyjmij i przetwórz dane rezerwacji...
+        reservation = Reservation.objects.create(
+            data=data['data'],
+            patient=request.user.patient
+        )
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
 
 def generuj_daty_i_godziny(request):
     doctors = Doctor.objects.all()  # Dodaj listę lekarzy do kontekstu
@@ -123,15 +135,15 @@ def widok_kalendarza(request, doctor_id):
         'doctor': doctor,
         'dostepne_terminy': dostepne_terminy,
         'godziny': godziny,
-        'dni_tygodnia': dni_tygodnia
+        'dni_tygodnia': dni_tygodnia,
+        'doctor_id': doctor_id,
     })
-
 
 
 @require_GET
 def get_calendar_data(request):
     date_str = request.GET.get('date')
-    doctor_id = request.GET.get('doctor_id')  # Pobranie ID lekarza z zapytania GET
+    doctor_id = request.GET.get('doctor_id', request.session.get('selected_doctor_id', None))
 
     if not date_str or not doctor_id:
         return JsonResponse({'error': 'Brak daty lub ID lekarza w zapytaniu GET'}, status=400)
@@ -145,6 +157,9 @@ def get_calendar_data(request):
 
     # Pobranie obiektu lekarza
     doctor = get_object_or_404(Doctor, pk=doctor_id)
+
+    # Zapisanie wybranego lekarza w sesji
+    request.session['selected_doctor_id'] = doctor_id
 
     # Filtrowanie wpisów kalendarza według lekarza i daty
     calendar_entries = Calendar.objects.filter(data__range=[aware_start_date, aware_end_date], doctor=doctor)
