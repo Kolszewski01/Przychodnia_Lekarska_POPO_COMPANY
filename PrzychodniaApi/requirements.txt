@@ -6,7 +6,4 @@ drf-yasg==1.21.7
 sqlparse==0.4.4
 psycopg2==2.9.9
 Pillow==10.1.0
-google-api-python-client
-google-auth
-google-auth-httplib2
-google-auth-oauthlib
+django-crontab

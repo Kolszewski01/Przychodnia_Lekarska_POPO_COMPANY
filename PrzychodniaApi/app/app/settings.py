@@ -109,6 +109,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CRONJOBS = [
+    ('*/30 * * * *', 'twoja_aplikacja.nazwa_pliku.usun_przeterminowane_rezerwacje')
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

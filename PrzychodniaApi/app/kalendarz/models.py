@@ -11,3 +11,5 @@ class Calendar(models.Model):
 class Reservation(models.Model):
     data = models.DateTimeField()
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, default=1)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, blank=True)
+
