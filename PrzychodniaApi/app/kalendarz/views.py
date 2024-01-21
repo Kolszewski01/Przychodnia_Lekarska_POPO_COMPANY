@@ -30,22 +30,28 @@ def create_reservation(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             reservation_datetime = parse_datetime(data.get('data'))
+            doctor_id = data.get('doctor_id')  # Pobierz ID lekarza z danych
 
             if reservation_datetime and is_naive(reservation_datetime):
                 reservation_datetime = make_aware(reservation_datetime)
+
+            # Pobierz obiekt lekarza
+            doctor = get_object_or_404(Doctor, pk=doctor_id)
 
             # Cofnięcie rezerwacji o 3 dni
             adjusted_reservation_datetime = reservation_datetime + timedelta(days=4)
 
             reservation = Reservation.objects.create(
                 data=adjusted_reservation_datetime,
-                patient=request.user.patient
+                patient=request.user.patient,
+                doctor=doctor  # Dodaj lekarza do rezerwacji
             )
             return JsonResponse({'status': 'success'})
         except KeyError:
             return JsonResponse({'status': 'error'}, status=400)
 
     return JsonResponse({'status': 'error'}, status=405)
+
 
 def generuj_daty_i_godziny(request):
     doctors = Doctor.objects.all()  # Dodaj listę lekarzy do kontekstu
@@ -89,29 +95,6 @@ def generuj_daty_i_godziny(request):
     return render(request, 'formularz_daty.html', {'form': form, 'doctors': doctors})
 
 
-def wyswietl_terminy(request):
-    wszystkie_terminy = Calendar.objects.all()
-    zarezerwowane_terminy = Reservation.objects.annotate(
-        datetime_field=ExpressionWrapper(
-            F('data'),
-            output_field=DateTimeField()
-        )
-    ).values_list('datetime_field', flat=True)
-
-    dostepne_terminy = []
-
-    for termin in wszystkie_terminy:
-        if termin.data not in zarezerwowane_terminy:
-            dostepne_terminy.append(termin)
-
-    godziny = [f"{h:02d}:{m:02d}" for h in range(8, 18) for m in (0, 30) if not (h == 17 and m == 30)]
-    dni_tygodnia = range(5)
-
-    return render(request, 'wyswietlanie_daty_i_godziny.html', {
-        'dostepne_terminy': dostepne_terminy,
-        'godziny': godziny,
-        'dni_tygodnia': dni_tygodnia
-    })
 
 
 def usun_wszystkie_wpisy(request):
@@ -136,6 +119,10 @@ def lista_lekarzy(request):
 
 def widok_kalendarza(request, doctor_id):
     doctor = get_object_or_404(Doctor, pk=doctor_id)
+
+    # Pobierz wszystkie zarezerwowane terminy dla tego lekarza
+    zarezerwowane_terminy = Reservation.objects.filter(doctor=doctor).values_list('data', flat=True)
+
     terminy = Calendar.objects.filter(doctor=doctor)
 
     # Stworzenie struktury danych dla dostępnych terminów
@@ -143,7 +130,9 @@ def widok_kalendarza(request, doctor_id):
     for termin in terminy:
         day = termin.data.weekday()
         time = termin.data.strftime('%H:%M')
-        if day in dostepne_terminy:
+
+        # Sprawdź, czy termin nie jest zarezerwowany przez jakiegokolwiek pacjenta
+        if termin.data not in zarezerwowane_terminy and day in dostepne_terminy:
             dostepne_terminy[day].append(time)
 
     godziny = [f"{h:02d}:{m:02d}" for h in range(8, 18) for m in (0, 30) if not (h == 17 and m == 30)]
@@ -190,3 +179,10 @@ def get_calendar_data(request):
     ]
 
     return JsonResponse(data, safe=False)
+
+def usun_przeterminowane_rezerwacje():
+    # Pobranie aktualnej daty i czasu
+    teraz = timezone.now()
+
+    # Usunięcie rezerwacji, które już minęły
+    Reservation.objects.filter(data__lt=teraz).delete()

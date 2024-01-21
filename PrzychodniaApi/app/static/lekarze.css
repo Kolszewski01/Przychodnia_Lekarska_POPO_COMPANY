@@ -1,0 +1,48 @@
+.doctor-photo {
+    width: 100px; /* Ustaw szerokość zdjęcia */
+    height: auto; /* Zachowaj proporcje zdjęcia */
+    border-radius: 50%; /* Opcjonalnie, aby zdjęcia były okrągłe */
+}
+.doctor-link {
+    display: block; /* Aby przycisk zajmował całą szerokość li */
+    text-decoration: none; /* Usuwa podkreślenie z linków */
+    color: black; /* Kolor tekstu */
+    padding: 10px; /* Dodaje trochę przestrzeni wokół tekstu */
+    margin: 5px 0; /* Margines pomiędzy elementami listy */
+    background-color: #e0e0e0; /* Tło przycisku */
+    border-radius: 5px; /* Zaokrąglenie krawędzi przycisku */
+}
+.doctor-link:hover {
+    background-color: #d0d0d0; /* Zmiana koloru tła przycisku przy najechaniu */
+}
+
+.doctor-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.doctor-photo-box {
+    display: grid;
+    grid-template-columns: 100px auto;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+    min-width: 250px; /* Minimalna szerokość boxa */
+}
+
+.doctor-photo {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.doctor-specialization {
+    font-weight: bold;
+    color: #333;
+}
