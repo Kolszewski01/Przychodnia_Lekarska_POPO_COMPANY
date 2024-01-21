@@ -12,7 +12,7 @@ def home(request):
     num_patients = Patient.objects.count()
 
     user_visits = None
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and role == 'patient' and hasattr(request.user, 'patient'):
         user_visits = Visit.objects.filter(patient=request.user.patient)
 
     context = {
@@ -20,8 +20,9 @@ def home(request):
         'num_secretaries': num_secretaries,
         'num_patients': num_patients,
         'role': role,
-        'user_visits': user_visits,  # Dodaj informacje o wizytach do kontekstu
+        'user_visits': user_visits,  # Dodaj informacje o wizytach do kontekstu tylko dla pacjenta
     }
+
     return render(request, 'index.html', context)
 
 
