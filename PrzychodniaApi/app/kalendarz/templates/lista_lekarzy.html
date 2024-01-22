@@ -60,7 +60,7 @@
         {% for doctor in doctors %}
             <li class="doctor-item">
                 <div class="doctor-photo-box">
-                    ''<img src="{{ doctor.profile_image.url }}" alt="Zdjęcie ''{{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo">
+{#                    ''<img src="{{ doctor.profile_image.url }}" alt="Zdjęcie ''{{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo">#}
                     <div class="doctor-specialization">{{ doctor.specialization }}</div>
                 </div>
                 <a href="{% url 'nazwa_widoku_kalendarza' doctor.id %}" class="doctor-link">

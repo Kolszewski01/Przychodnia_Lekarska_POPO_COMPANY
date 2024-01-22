@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Dodaj nową wizytę</h2>
+  <form id="visitForm" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" id="submitBtn">Zapisz</button>
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  {% if success_message %}
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      Swal.fire({
+        icon: 'success',
+        title: 'Pomyślnie dodano receptę!',
+        showConfirmButton: false,
+        timer: 1500,
+        background: '#B9D7EA'
+      });
+    </script>
+  {% endif %}
+</body>
+</html>

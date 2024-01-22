@@ -68,7 +68,6 @@
             <nav>
                 <div id="map-container">
                     <a href="{% url 'medical_records' %}">Dokumentacja medyczna</a>
-{#                    <a href="{% url 'edit_medical_record' %}">Edytuj Dokumentacje medyczną</a>#}
                     <a href="{% url 'prescription_create' %}">Wypisz receptę</a>
                     <a href="{% url 'change_password' %}">Zmień hasło</a>
                 <form method="post" action="{% url 'logout' %}">
@@ -90,8 +89,8 @@
         <main>
             <nav>
                 <div id="map-container">
-                    <a href="doctor_register/">Dokumentacja medyczna</a>
-                    <a href="">Zapisz się na wizytę </a>
+                    <a href="{% url 'medical_records' %}">Dokumentacja medyczna</a>
+                    <a href="{% url 'add_visit' %}">Zapisz pacjenta na wizytę </a>
                     <a href="{% url 'change_password' %}">Zmień hasło</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
@@ -115,7 +114,6 @@
                     <a href="api/patient_records/">Dokumentacja medyczna</a>
                     <a href="{% url 'lista_lekarzy' %}">Zapisz się na wizytę </a>
                     <a href="{% url 'prescription-list' %}">Zobacz Recepty</a>
-{#                    <a href="{% url 'user_visits' %}">Zobacz Wizyty</a>#}
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                   <button type="submit">Wyloguj</button>
@@ -177,8 +175,8 @@
         <!-- Content -->
         <div class="content">
             <div id="review">
+                <h2>O nas</h2>
                 <p>
-                    <h2>O nas</h2>
                     Witamy w Przychodni Online, miejscu, gdzie zdrowie i dobre samopoczucie naszych pacjentów stają się naszym priorytetem. Jesteśmy zespołem doświadczonych specjalistów z różnych dziedzin medycyny, którzy łączą wiedzę i pasję, aby zapewnić Państwu opiekę na najwyższym poziomie.
                     Nasza przychodnia oferuje szeroki zakres usług medycznych, w tym konsultacje specjalistyczne, diagnostykę, leczenie ambulatoryjne oraz wsparcie w zakresie zdrowia psychicznego. Korzystamy z nowoczesnego sprzętu i najnowszych technologii, aby zapewnić dokładną diagnozę i skuteczne leczenie.
                     Wierzymy, że kluczem do skutecznej opieki zdrowotnej jest indywidualne podejście do każdego pacjenta. Dlatego nasz personel jest zawsze gotowy wysłuchać, zrozumieć i dostosować plan leczenia do unikalnych potrzeb każdego z Państwa.
@@ -186,16 +184,37 @@
                     Zapraszamy do Przychodni Online- tutaj zdrowie i dobrostan naszych pacjentów zawsze są na pierwszym miejscu.
                 </p>
             </div>
-                <div>
+                <div id="specialist">
                     <h2>Nasi specjaliści</h2>
                     <div>
                         {% for i in "12345" %}
                             {% with doctor_image='images/profile_images/doctor' %}
-                                <img src="{% static doctor_image|stringformat:"s" %}{{ i }}.png" width="200px" height="200px">
+                            <div class="doctor-item">
+                                <div class="doctor-info">
+                                    <img src="{% static doctor_image|stringformat:"s" %}{{ i }}.png" width="200px" height="200px">
+                                    <div class="text-info">
+                                        {% if i == "1" %}
+                                            <p><strong>Lekarz Medycyny estetycznej</strong> Mariusz Kupniewski</p>
+                                            <p><strong>Cena za wizytę: </strong>200zł</p>
+                                        {% elif i == "2" %}
+                                            <p><strong>Lekarz ginekolog </strong> Katarzyna Bąk</p>
+                                            <p><strong>Cena za wizytę: </strong>250zł</p>
+                                        {% elif i == "3" %}
+                                            <p><strong>Lekarz Urolog </strong> Krzysztof Skiba</p>
+                                            <p><strong>Cena za wizytę: </strong>150zł</p>
+                                        {% elif i == "4" %}
+                                            <p><strong>Lekarz Psychiatra </strong> Grzegorz Szatkowski</p>
+                                            <p><strong>Cena za wizytę: </strong>300zł</p>
+                                        {% elif i == "5" %}
+                                            <p><strong>Lekarz Pediatra </strong> Łukasz Mańczyk</p>
+                                            <p><strong>Cena za wizytę: </strong>200zł</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                             {% endwith %}
                         {% endfor %}
                     </div>
-                    <img class="arrow" src="{% static 'images/down_arrow.png' %}" width="30px" height="30px">
                 </div>
         </div>
     </main>

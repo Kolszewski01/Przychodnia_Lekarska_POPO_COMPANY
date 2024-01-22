@@ -7,7 +7,7 @@ class Visit(models.Model):
     reservation_copy = models.OneToOneField(Reservation, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     room_number = models.CharField(max_length=10, blank=True)
-    status = models.CharField(max_length=50, choices=[('scheduled', 'Scheduled'), ('canceled', 'Canceled'), ('completed', 'Completed')], default='scheduled')
+    status = models.CharField(max_length=50, choices=[('zaplanowana', 'Zaplanowana'), ('odwołana', 'Odwołana'), ('zakończona', 'Zakończona')], default='zaplanowana')
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
 
