@@ -12,4 +12,4 @@ class Visit(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.doctor} - {self.reservation_copy.data} - {self.patient}"
+        return f"{self.doctor.specialization} - {self.reservation_copy.data} - {self.patient}"

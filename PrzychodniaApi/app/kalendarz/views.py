@@ -19,6 +19,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import make_aware, is_naive
 from django.utils.dateparse import parse_datetime
+from django.db.models.functions import TruncDate, TruncTime
 import json
 
 
@@ -117,26 +118,42 @@ def lista_lekarzy(request):
 
 
 
+
 def widok_kalendarza(request, doctor_id):
     doctor = get_object_or_404(Doctor, pk=doctor_id)
 
-    # Pobierz wszystkie zarezerwowane terminy dla tego lekarza
-    zarezerwowane_terminy = Reservation.objects.filter(doctor=doctor).values_list('data', flat=True)
-
-    terminy = Calendar.objects.filter(doctor=doctor)
-
-    # Stworzenie struktury danych dla dostępnych terminów
-    dostepne_terminy = {day: [] for day in range(5)}  # Dni od poniedziałku (0) do piątku (4)
-    for termin in terminy:
+    # Zbieranie zarezerwowanych terminów z dniem tygodnia
+    zarezerwowane_terminy_set = set()
+    zarezerwowane_terminy_qs = Reservation.objects.filter(doctor=doctor)
+    for termin in zarezerwowane_terminy_qs:
         day = termin.data.weekday()
-        time = termin.data.strftime('%H:%M')
+        data_czas_str = termin.data.strftime('%Y-%m-%d %H:%M')
+        zarezerwowane_terminy_set.add((day, data_czas_str))
 
-        # Sprawdź, czy termin nie jest zarezerwowany przez jakiegokolwiek pacjenta
-        if termin.data not in zarezerwowane_terminy and day in dostepne_terminy:
-            dostepne_terminy[day].append(time)
+    # Pobieranie terminów z kalendarza z dniem tygodnia
+    terminy_kalendarza_qs = Calendar.objects.filter(doctor=doctor)
+    terminy_kalendarza_set = set()
+    for termin in terminy_kalendarza_qs:
+        day = termin.data.weekday()
+        data_czas_str = termin.data.strftime('%Y-%m-%d %H:%M')
+        terminy_kalendarza_set.add((day, data_czas_str))
 
+    # Słownik na dostępne terminy, kluczem jest dzień tygodnia (0-4)
+    dostepne_terminy = {day: [] for day in range(5)}
+
+    for day, data_czas_str in terminy_kalendarza_set:
+        if (day, data_czas_str) not in zarezerwowane_terminy_set:
+            dostepne_terminy[day].append(data_czas_str[-5:])  # Dodaje tylko godzinę
+
+    # Godziny pracy od 08:00 do 17:30 co 30 minut
     godziny = [f"{h:02d}:{m:02d}" for h in range(8, 18) for m in (0, 30) if not (h == 17 and m == 30)]
+
+    # Dni tygodnia od poniedziałku (0) do piątku (4)
     dni_tygodnia = range(5)
+    print(zarezerwowane_terminy_set)
+    print(terminy_kalendarza_set)
+    print(dostepne_terminy)
+
 
     return render(request, 'widok_kalendarza.html', {
         'doctor': doctor,
@@ -145,7 +162,6 @@ def widok_kalendarza(request, doctor_id):
         'dni_tygodnia': dni_tygodnia,
         'doctor_id': doctor_id,
     })
-
 
 @require_GET
 def get_calendar_data(request):

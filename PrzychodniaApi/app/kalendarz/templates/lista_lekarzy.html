@@ -3,16 +3,64 @@
 
 <html>
 <head>
-    <title>Lista Lekarzy</title>
+    <meta charset="UTF-8">
+    <title>Przychodnia Online</title>
     <link rel="stylesheet" type="text/css" href="{% static 'lekarze.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
 </head>
 <body>
-    <h1>Lista Lekarzy</h1>
+<header>
+        <div class="section">
+            <h2>Przychodnia online</h2>
+        </div>
+
+        <div class="section">
+            <h2>Numer telefonu: 623 772 612</h2>
+        </div>
+
+        <div class="section" >
+            <h2>Olsztyn, Słoneczna 54 </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+                Zalogowany użytkownik: <b>{{user.email}}</b>
+            {% else %}
+                <a href="{% url 'login' %}">zaloguj się</a>
+            {% endif %}
+            </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+
+            {% else %}
+                <a href="/register_patient/">rejestracja</a>
+            {% endif %}
+            </h2>
+        </div>
+    </header>
+    <main>
+
+            <nav>
+                <div id="map-container">
+                    <a href="/" class="to_menu">Do menu </a>
+                    <a href="{% url 'lista_lekarzy' %}" onclick="redirectOnce(this)">Zapisz się na wizytę</a>
+                    <a href="{% url 'prescription-list' %}">Zobacz Recepty</a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                  <button type="submit">Wyloguj</button>
+                </form>
+                </div>
+            </nav>
+    <div id="documentary">
+        <h1>Lista Lekarzy</h1>
     <ul>
         {% for doctor in doctors %}
             <li class="doctor-item">
                 <div class="doctor-photo-box">
-                    <img src="{{ doctor.profile_image.url }}" alt="Zdjęcie {{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo">
+                    ''<img src="{{ doctor.profile_image.url }}" alt="Zdjęcie ''{{ doctor.first_name }} {{ doctor.last_name }}" class="doctor-photo">
                     <div class="doctor-specialization">{{ doctor.specialization }}</div>
                 </div>
                 <a href="{% url 'nazwa_widoku_kalendarza' doctor.id %}" class="doctor-link">
@@ -23,5 +71,7 @@
             <li>Brak dostępnych lekarzy.</li>
         {% endfor %}
     </ul>
+    </div>
+    </main>
 </body>
 </html>

@@ -4,12 +4,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Kalendarz Lekarza: Imię Nazwisko</title>
+    <title>Kalendarz Lekarza: {}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'stylekalendarz.css' %}">
 </head>
 <body>
     <div id="schedule-container">
-        <h1>Kalendarz Lekarza: Imię Nazwisko</h1>
+        <h1>Kalendarz Lekarza: {{ doctor.specialization }} {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}</h1>
 
         <!-- Przyciski do przewijania tygodni -->
         <button id="prevWeekButton">&#9664; Poprzedni tydzień</button>
@@ -34,15 +34,14 @@
                     <td id="slot-{{ day }}-{{ hour }}">
                         {% with day_slots=dostepne_terminy|default_if_none:0|get_item:day %}
                         {% if hour in day_slots %}
-                        <button class="time-slot available">Dostępne</button>
-                        {% else %}
-                        <button class="time-slot unavailable">Niedostępne</button>
+                        <button class="time-slot available">{{ hour }}</button>
                         {% endif %}
                         {% endwith %}
                     </td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
+
             </tbody>
         </table>
     </div>
@@ -150,21 +149,21 @@
                     const cell = document.createElement('td');
                     const slotData = data.find(entry => entry.day === day && entry.time === hour.replace(':', '-'));
 
-                    const button = document.createElement('button');
-                    button.textContent = slotData ? 'Dostępne' : 'Niedostępne';
-                    button.classList.add(slotData ? 'available' : 'unavailable');
-
                     if (slotData) {
+                        const button = document.createElement('button');
+                        button.textContent = hour; // Wyświetla godzinę
+                        button.classList.add('available');
                         button.addEventListener('click', () => handleAvailableClick(hour, day));
+                        cell.appendChild(button);
                     }
 
-                    cell.appendChild(button);
                     row.appendChild(cell);
                 }
 
                 tbody.appendChild(row);
             }
         }
+
 
         function getCookie(name) {
             let cookieValue = null;
