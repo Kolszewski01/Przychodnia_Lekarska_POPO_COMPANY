@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Kalendarz Lekarza: {}</title>
+    <title>Kalendarz Lekarza: {{ doctor.specialization }} {{ doctor.prof_title }} {{ doctor.first_name }} {{ doctor.last_name }}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'stylekalendarz.css' %}">
 </head>
 <body>
@@ -26,23 +26,23 @@
                     <th id="day-4">Piątek</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for hour in godziny %}
-                <tr>
-                    <td>{{ hour }}</td>
-                    {% for day in dni_tygodnia %}
-                    <td id="slot-{{ day }}-{{ hour }}">
-                        {% with day_slots=dostepne_terminy|default_if_none:0|get_item:day %}
-                        {% if hour in day_slots %}
-                        <button class="time-slot available">{{ hour }}</button>
-                        {% endif %}
-                        {% endwith %}
-                    </td>
+                <tbody>
+                    {% for hour in godziny %}
+                    <tr>
+                        <td>{{ hour }}</td>
+                        {% for day in dni_tygodnia %}
+                        <td id="slot-{{ day }}-{{ hour }}">
+                            {% with day_slots=dostepne_terminy|default_if_none:0|get_item:day %}
+                            {% if hour in day_slots.time %}
+                            <button class="time-slot available">{{ hour }}</button>
+                            {% endif %}
+                            {% endwith %}
+                        </td>
+                        {% endfor %}
+                    </tr>
                     {% endfor %}
-                </tr>
-                {% endfor %}
+                </tbody>
 
-            </tbody>
         </table>
     </div>
 
@@ -53,148 +53,154 @@
         <button id="cancelReservation">Nie</button>
     </div>
 
-    <script>
-        const godziny = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"];
-        const dni_tygodnia = [1, 2, 3, 4, 5]; // Uwaga: dni tygodnia są mapowane zgodnie z Pythonem, gdzie 0 to poniedziałek
-        let formattedDate;
-        const currentDate = new Date();
-        let selectedDoctorId = {{ doctor.id }};
+<script>
+    const godziny = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"];
+    const dni_tygodnia = [0, 1, 2, 3, 4];
+    let formattedDate;
+    const currentDate = new Date();
+    let selectedDoctorId = {{ doctor.id }};
 
-        function formatDateForURL(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+    function formatDateForURL(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function formatDate(date) {
+        const options = { weekday: 'long', month: 'long', day: 'numeric' };
+        return date.toLocaleDateString('pl-PL', options);
+    }
+
+    function updateHeaderDates() {
+        const startDate = new Date(currentDate);
+        startDate.setDate(startDate.getDate() - startDate.getDay() + 1);
+
+        for (let i = 0; i < 5; i++) {
+            const dayElement = document.getElementById(`day-${i}`);
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + i);
+            dayElement.textContent = formatDate(date);
         }
+    }
 
-        function formatDate(date) {
-            const options = { weekday: 'long', month: 'long', day: 'numeric' };
-            return date.toLocaleDateString('pl-PL', options);
-        }
-
-        function updateHeaderDates() {
-            const startDate = new Date(currentDate);
-            // Przesuń startDate o 7 dni do przodu
-            startDate.setDate(startDate.getDate() + 7 - startDate.getDay() + 1);
-
-            for (let i = 0; i < 5; i++) {
-                const dayElement = document.getElementById(`day-${i}`);
-                const date = new Date(startDate);
-                date.setDate(startDate.getDate() + i);
-                dayElement.textContent = formatDate(date);
-            }
-        }
-
-        function updateCalendarView() {
-            formattedDate = formatDateForURL(currentDate);
-            const url = `/kalendarz/api/get_calendar_data/?date=${formattedDate}&doctor_id=${selectedDoctorId}`;
-            fetch(url)
-                .then(response => response.json())
-                .then(newData => {
-                    generateCalendarSlots(newData);
-                })
-                .catch(error => {
-                    console.error('Błąd przy pobieraniu danych kalendarza:', error);
-                });
-        }
-
-        function handleAvailableClick(hour, day) {
-            const modal = document.getElementById('reservationModal');
-            modal.style.display = 'block';
-
-            document.getElementById('confirmReservation').onclick = function() {
-                makeReservation(hour, day);
-                modal.style.display = 'none';
-            };
-
-            document.getElementById('cancelReservation').onclick = function() {
-                modal.style.display = 'none';
-            };
-        }
-
-        function makeReservation(hour, day) {
-            fetch('http://localhost:8000/kalendarz/create_reservation/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    data: `${formattedDate} ${hour}`,
-                    doctor_id: selectedDoctorId
-                })
-            })
+    function updateCalendarView() {
+        formattedDate = formatDateForURL(currentDate);
+        const url = `/kalendarz/api/get_calendar_data/?date=${formattedDate}&doctor_id=${selectedDoctorId}`;
+        fetch(url)
             .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    updateCalendarView();
-                }
+            .then(newData => {
+                generateCalendarSlots(newData);
             })
             .catch(error => {
-                console.error('Błąd:', error);
+                console.error('Błąd przy pobieraniu danych kalendarza:', error);
             });
-        }
+    }
 
-        function generateCalendarSlots(data) {
-            const tbody = document.querySelector('tbody');
-            tbody.innerHTML = '';
+    function handleAvailableClick(hour, day) {
+        const modal = document.getElementById('reservationModal');
+        modal.style.display = 'block';
 
-            for (const hour of godziny) {
-                const row = document.createElement('tr');
-                const hourCell = document.createElement('td');
-                hourCell.textContent = hour;
-                row.appendChild(hourCell);
+        // Pobierz datę z nagłówka kolumny dla wybranego dnia
+        const startDate = new Date(currentDate);
+        startDate.setDate(startDate.getDate() - startDate.getDay() + 1);
+        const selectedDate = new Date(startDate);
+        selectedDate.setDate(startDate.getDate() + day);
 
-                for (let day = 0; day < 5; day++) {
-                    const cell = document.createElement('td');
-                    const slotData = data.find(entry => entry.day === day && entry.time === hour.replace(':', '-'));
+        document.getElementById('confirmReservation').onclick = function() {
+            makeReservation(hour, selectedDate);
+            modal.style.display = 'none';
+        };
 
-                    if (slotData) {
-                        const button = document.createElement('button');
-                        button.textContent = hour; // Wyświetla godzinę
-                        button.classList.add('available');
-                        button.addEventListener('click', () => handleAvailableClick(hour, day));
-                        cell.appendChild(button);
-                    }
+        document.getElementById('cancelReservation').onclick = function() {
+            modal.style.display = 'none';
+        };
+    }
 
-                    row.appendChild(cell);
+    function makeReservation(hour, date) {
+        const formattedDate = formatDateForURL(date);
+
+        fetch('http://localhost:8000/kalendarz/create_reservation/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                data: `${formattedDate} ${hour}`,
+                doctor_id: selectedDoctorId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                updateCalendarView();
+            }
+        })
+        .catch(error => {
+            console.error('Błąd:', error);
+        });
+    }
+
+    function generateCalendarSlots(data) {
+        const tbody = document.querySelector('tbody');
+        tbody.innerHTML = '';
+
+        for (const hour of godziny) {
+            const row = document.createElement('tr');
+            const hourCell = document.createElement('td');
+            hourCell.textContent = hour;
+            row.appendChild(hourCell);
+
+            for (let day = 0; day < 5; day++) {
+                const cell = document.createElement('td');
+                const slotData = data.find(entry => entry.day === day && entry.time === hour.replace(':', '-'));
+
+                if (slotData) {
+                    const button = document.createElement('button');
+                    button.textContent = hour;
+                    button.classList.add('available');
+                    button.addEventListener('click', () => handleAvailableClick(hour, day));
+                    cell.appendChild(button);
                 }
 
-                tbody.appendChild(row);
+                row.appendChild(cell);
             }
+
+            tbody.appendChild(row);
         }
+    }
 
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
             }
-            return cookieValue;
         }
+        return cookieValue;
+    }
 
-        document.getElementById('prevWeekButton').addEventListener('click', function() {
-            currentDate.setDate(currentDate.getDate() - 7);
-            updateHeaderDates();
-            updateCalendarView();
-        });
-
-        document.getElementById('nextWeekButton').addEventListener('click', function() {
-            currentDate.setDate(currentDate.getDate() + 7);
-            updateHeaderDates();
-            updateCalendarView();
-        });
-
+    document.getElementById('prevWeekButton').addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() - 7);
         updateHeaderDates();
         updateCalendarView();
-    </script>
+    });
+
+    document.getElementById('nextWeekButton').addEventListener('click', function() {
+        currentDate.setDate(currentDate.getDate() + 7);
+        updateHeaderDates();
+        updateCalendarView();
+    });
+
+    updateHeaderDates();
+    updateCalendarView();
+</script>
 
 </body>
 </html>

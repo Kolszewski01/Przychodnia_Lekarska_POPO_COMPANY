@@ -40,10 +40,9 @@ def create_reservation(request):
             doctor = get_object_or_404(Doctor, pk=doctor_id)
 
             # Cofnięcie rezerwacji o 3 dni
-            adjusted_reservation_datetime = reservation_datetime + timedelta(days=4)
-
+            print(data)
             reservation = Reservation.objects.create(
-                data=adjusted_reservation_datetime,
+                data=reservation_datetime,
                 patient=request.user.patient,
                 doctor=doctor  # Dodaj lekarza do rezerwacji
             )
@@ -122,7 +121,6 @@ def lista_lekarzy(request):
 def widok_kalendarza(request, doctor_id):
     doctor = get_object_or_404(Doctor, pk=doctor_id)
 
-    # Zbieranie zarezerwowanych terminów z dniem tygodnia
     zarezerwowane_terminy_set = set()
     zarezerwowane_terminy_qs = Reservation.objects.filter(doctor=doctor)
     for termin in zarezerwowane_terminy_qs:
@@ -130,7 +128,6 @@ def widok_kalendarza(request, doctor_id):
         data_czas_str = termin.data.strftime('%Y-%m-%d %H:%M')
         zarezerwowane_terminy_set.add((day, data_czas_str))
 
-    # Pobieranie terminów z kalendarza z dniem tygodnia
     terminy_kalendarza_qs = Calendar.objects.filter(doctor=doctor)
     terminy_kalendarza_set = set()
     for termin in terminy_kalendarza_qs:
@@ -138,26 +135,18 @@ def widok_kalendarza(request, doctor_id):
         data_czas_str = termin.data.strftime('%Y-%m-%d %H:%M')
         terminy_kalendarza_set.add((day, data_czas_str))
 
-    # Słownik na dostępne terminy, kluczem jest dzień tygodnia (0-4)
-    dostepne_terminy = {day: [] for day in range(5)}
-
+    dostepne_terminy_frontend = []
     for day, data_czas_str in terminy_kalendarza_set:
         if (day, data_czas_str) not in zarezerwowane_terminy_set:
-            dostepne_terminy[day].append(data_czas_str[-5:])  # Dodaje tylko godzinę
+            czas_str = data_czas_str[-5:].replace(':', '-')
+            dostepne_terminy_frontend.append({"day": day, "time": czas_str})
 
-    # Godziny pracy od 08:00 do 17:30 co 30 minut
     godziny = [f"{h:02d}:{m:02d}" for h in range(8, 18) for m in (0, 30) if not (h == 17 and m == 30)]
-
-    # Dni tygodnia od poniedziałku (0) do piątku (4)
     dni_tygodnia = range(5)
-    print(zarezerwowane_terminy_set)
-    print(terminy_kalendarza_set)
-    print(dostepne_terminy)
-
 
     return render(request, 'widok_kalendarza.html', {
         'doctor': doctor,
-        'dostepne_terminy': dostepne_terminy,
+        'dostepne_terminy': dostepne_terminy_frontend,  # Przekazanie przetworzonych danych
         'godziny': godziny,
         'dni_tygodnia': dni_tygodnia,
         'doctor_id': doctor_id,
@@ -184,14 +173,18 @@ def get_calendar_data(request):
     # Zapisanie wybranego lekarza w sesji
     request.session['selected_doctor_id'] = doctor_id
 
-    # Filtrowanie wpisów kalendarza według lekarza i daty
+    # Pobranie zarezerwowanych terminów dla lekarza
+    reserved_slots = Reservation.objects.filter(doctor=doctor).values_list('data', flat=True)
+
+    # Filtrowanie wpisów kalendarza według lekarza i daty oraz sprawdzanie, czy termin jest zarezerwowany
     calendar_entries = Calendar.objects.filter(data__range=[aware_start_date, aware_end_date], doctor=doctor)
     data = [
         {
             'day': entry.data.weekday(),
-            'time': entry.data.strftime('%H-%M')  # Format 'HH-MM'
+            'time': entry.data.strftime('%H-%M'),  # Format 'HH-MM'
+            'reserved': entry.data in reserved_slots  # Sprawdzenie, czy termin jest zarezerwowany
         }
-        for entry in calendar_entries
+        for entry in calendar_entries if entry.data not in reserved_slots  # Dodanie do danych tylko jeśli termin nie jest zarezerwowany
     ]
 
     return JsonResponse(data, safe=False)

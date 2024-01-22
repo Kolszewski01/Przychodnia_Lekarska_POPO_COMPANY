@@ -18,6 +18,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Remote Python 3.11.6 Docker Compose (app) (9)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="semestr zimowy 2023" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
