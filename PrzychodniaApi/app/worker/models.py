@@ -48,6 +48,7 @@ class Doctor(Worker):
     room_number = models.CharField(max_length=10, verbose_name='Room Number')
     prof_title = models.CharField(choices=PROF_TITLE_CHOICES, default='Dr. med.')
 
+
 class Secretary(Worker):
     pass
 

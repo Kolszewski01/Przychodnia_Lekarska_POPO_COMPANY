@@ -8,6 +8,7 @@ from django.views.decorators.http import require_GET
 from rest_framework.views import APIView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Calendar, Reservation
+from visit.models import Visit
 from .forms import DateForm
 from rest_framework.response import Response
 from .serializers import CalendarSerializer
@@ -31,7 +32,7 @@ def create_reservation(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             reservation_datetime = parse_datetime(data.get('data'))
-            doctor_id = data.get('doctor_id')  # Pobierz ID lekarza z danych
+            doctor_id = data.get('doctor_id')
 
             if reservation_datetime and is_naive(reservation_datetime):
                 reservation_datetime = make_aware(reservation_datetime)
@@ -39,18 +40,26 @@ def create_reservation(request):
             # Pobierz obiekt lekarza
             doctor = get_object_or_404(Doctor, pk=doctor_id)
 
-            # Cofnięcie rezerwacji o 3 dni
-            print(data)
+            # Tworzenie rezerwacji
             reservation = Reservation.objects.create(
                 data=reservation_datetime,
                 patient=request.user.patient,
-                doctor=doctor  # Dodaj lekarza do rezerwacji
+                doctor=doctor
             )
-            return JsonResponse({'status': 'success'})
+
+            # Tworzenie powiązanej wizyty
+            visit = Visit.objects.create(
+                reservation_copy=reservation,
+                doctor=doctor,
+                patient=request.user.patient
+            )
+
+            return JsonResponse({'status': 'success', 'visit_id': visit.id})
         except KeyError:
             return JsonResponse({'status': 'error'}, status=400)
 
     return JsonResponse({'status': 'error'}, status=405)
+
 
 
 def generuj_daty_i_godziny(request):
