@@ -1,5 +1,7 @@
 from django.db import models
 from user.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 
 class Worker(User):
@@ -47,6 +49,21 @@ class Doctor(Worker):
     specialization = models.CharField(max_length=120)
     room_number = models.CharField(max_length=10, verbose_name='Room Number')
     prof_title = models.CharField(choices=PROF_TITLE_CHOICES, default='Dr. med.')
+
+    visit_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0.0,
+        verbose_name='Price for Visit'
+    )
+
+    room_number = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        verbose_name='Room Number'
+    )
+
+
+
 
 
 class Secretary(Worker):

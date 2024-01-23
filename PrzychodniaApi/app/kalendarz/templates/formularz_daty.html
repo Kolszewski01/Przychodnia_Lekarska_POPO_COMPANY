@@ -4,24 +4,52 @@
     <title>Formularz daty</title>
 </head>
 <body>
-<form method="post" action="{% url 'generuj_daty_i_godziny' %}">
-    {% csrf_token %}
-    <label for="doctor">Wybierz lekarza:</label>
-    <select name="doctor" id="doctor">
-        {% for doctor in doctors %}
-            <option value="{{ doctor.id }}">{{ doctor.first_name }} {{ doctor.last_name }}</option>
-        {% endfor %}
-    </select>
-    {{ form.as_p }}
-    <button type="submit">Generuj daty i godziny</button>
-</form>
+    <!-- Formularz do generowania wielu terminów -->
+    <form method="post" action="{% url 'generuj_daty_i_godziny' %}">
+        {% csrf_token %}
+        <label for="doctor">Wybierz lekarza:</label>
+        <select name="doctor" id="doctor">
+            {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.first_name }} {{ doctor.last_name }}</option>
+            {% endfor %}
+        </select>
+        {{ form.as_p }}
+        <button type="submit" name="generate">Generuj daty i godziny</button>
+    </form>
 
+    <!-- Formularz do usuwania wielu terminów -->
+    <form method="post" action="{% url 'generuj_daty_i_godziny' %}">
+        {% csrf_token %}
+        <label for="delete_doctor">Wybierz lekarza do usunięcia terminów:</label>
+        <select name="delete_doctor" id="delete_doctor">
+            {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.first_name }} {{ doctor.last_name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="delete">Usuń terminy</button>
+    </form>
 
-<form action="{% url 'usun_wszystkie_wpisy' %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Usuń wszystkie wpisy</button>
-</form>
+    <!-- Formularz do dodawania pojedynczego terminu -->
+    <form method="post" action="{% url 'generuj_daty_i_godziny' %}">
+        {% csrf_token %}
+        <select name="doctor_single">
+            {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.first_name }} {{ doctor.last_name }}</option>
+            {% endfor %}
+        </select>
+        <input type="datetime-local" name="data_single">
+        <button type="submit" name="add_single">Dodaj termin</button>
+    </form>
 
-
+    <!-- Formularz do usuwania pojedynczego terminu -->
+    <form method="post" action="{% url 'generuj_daty_i_godziny' %}">
+        {% csrf_token %}
+        <select name="appointment_id">
+            {% for appointment in appointments %}
+                <option value="{{ appointment.id }}">{{ appointment.doctor }} - {{ appointment.data }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="delete_single">Usuń termin</button>
+    </form>
 </body>
 </html>

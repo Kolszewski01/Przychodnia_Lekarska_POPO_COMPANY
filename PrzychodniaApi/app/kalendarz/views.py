@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Calendar, Reservation
 from visit.models import Visit
 from .forms import DateForm
+
 from rest_framework.response import Response
 from .serializers import CalendarSerializer
 from worker.models import Doctor
@@ -37,74 +38,100 @@ def create_reservation(request):
             if reservation_datetime and is_naive(reservation_datetime):
                 reservation_datetime = make_aware(reservation_datetime)
 
-            # Pobierz obiekt lekarza
+            # Get the doctor object
             doctor = get_object_or_404(Doctor, pk=doctor_id)
 
-            # Tworzenie rezerwacji
+            # Use attributes from the doctor object
+            room_number = doctor.room_number  # Assume that room_number is an attribute of Doctor
+            visit_price = doctor.visit_price  # Assume that visit_price is an attribute of Doctor
+
+            # Create the reservation
             reservation = Reservation.objects.create(
                 data=reservation_datetime,
                 patient=request.user.patient,
                 doctor=doctor
             )
 
-            # Tworzenie powiązanej wizyty
+            # Create the associated visit
             visit = Visit.objects.create(
                 reservation_copy=reservation,
                 doctor=doctor,
-                patient=request.user.patient
+                patient=request.user.patient,
+                room_number=room_number,  # Set the room number from Doctor object
+                price=visit_price  # Set the visit price from Doctor object
             )
 
             return JsonResponse({'status': 'success', 'visit_id': visit.id})
-        except KeyError:
-            return JsonResponse({'status': 'error'}, status=400)
+        except KeyError as e:
+            # Return specific error message for missing data
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+        except Exception as e:
+            # Handle any other exception
+            return JsonResponse({'status': 'error', 'message': 'Unexpected error occurred'}, status=500)
 
-    return JsonResponse({'status': 'error'}, status=405)
-
-
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 def generuj_daty_i_godziny(request):
-    doctors = Doctor.objects.all()  # Dodaj listę lekarzy do kontekstu
+    doctors = Doctor.objects.all()  # Lista lekarzy
 
     if request.method == 'POST':
-        form = DateForm(request.POST)
-        if form.is_valid():
-            end_date = form.cleaned_data['end_date']
-            doctor_id = request.POST.get('doctor')  # Pobierz ID lekarza z formularza
-            doctor = get_object_or_404(Doctor, pk=doctor_id)  # Pobierz obiekt lekarza
+        if 'generate' in request.POST:
+            # Logika generowania wielu terminów
+            form = DateForm(request.POST)  # Załóżmy, że taki formularz istnieje
+            if form.is_valid():
+                end_date = form.cleaned_data['end_date']
+                doctor_id = request.POST.get('doctor')
+                doctor = get_object_or_404(Doctor, pk=doctor_id)
 
-            # Ustal datę początkową
-            start_date = date.today()
+                start_date = date.today()
+                interval = timedelta(minutes=30)
 
-            # Ustal interwał co pół godziny
-            interval = timedelta(minutes=30)
+                current_date = start_date
+                while current_date <= end_date:
+                    if current_date.weekday() < 5:  # Poniedziałek do piątku
+                        godzina = datetime.combine(current_date, time(8, 0))
+                        godzina = timezone.make_aware(godzina)
+                        end_of_day = timezone.make_aware(datetime.combine(current_date, time(17, 30)))
 
-            current_date = start_date
-            while current_date <= end_date:
-                if current_date.weekday() < 5:  # Sprawdź, czy to dzień od poniedziałku do piątku (0-4)
-                    godzina = datetime.combine(current_date, time(8, 0))
-                    godzina = timezone.make_aware(godzina)  # Poprawnie użyj make_aware
-                    end_of_day = timezone.make_aware(datetime.combine(current_date, time(17, 30)))  # Ostatnia godzina (17:30)
+                        while godzina <= end_of_day:
+                            if not Calendar.objects.filter(data=godzina, doctor=doctor).exists():
+                                nowy_rekord = Calendar(data=godzina, doctor=doctor)
+                                nowy_rekord.save()
 
-                    while godzina <= end_of_day:
-                        nowy_rekord = Calendar(data=godzina, doctor=doctor)
-                        nowy_rekord.save()
-                        godzina += interval
-                        if godzina.time() > time(17, 30):  # Zapobieganie tworzeniu godziny poza zakresem
-                            break
-                        godzina = timezone.make_aware(datetime.combine(current_date, godzina.time()))
+                            godzina += interval
+                            if godzina.time() > time(17, 30):
+                                break
+                            godzina = timezone.make_aware(datetime.combine(current_date, godzina.time()))
 
-                current_date += timedelta(days=1)
+                    current_date += timedelta(days=1)
 
-            # Przekierowanie po utworzeniu terminów
-            return redirect('generuj_daty_i_godziny')  # Zmień na odpowiednią nazwę widoku
+        elif 'delete' in request.POST:
+            # Logika usuwania wielu terminów
+            doctor_id = request.POST.get('delete_doctor')
+            Calendar.objects.filter(doctor_id=doctor_id).delete()
+
+        elif 'add_single' in request.POST:
+            # Logika dodawania pojedynczego terminu
+            doctor_id = request.POST.get('doctor_single')
+            data = request.POST.get('data_single')  # Format 'YYYY-MM-DD HH:MM'
+            doctor = get_object_or_404(Doctor, pk=doctor_id)
+            data_godzina = timezone.make_aware(datetime.strptime(data, '%Y-%m-%d %H:%M'))
+
+            if not Calendar.objects.filter(data=data_godzina, doctor=doctor).exists():
+                Calendar.objects.create(data=data_godzina, doctor=doctor)
+
+        elif 'delete_single' in request.POST:
+            # Logika usuwania pojedynczego terminu
+            appointment_id = request.POST.get('appointment_id')
+            Calendar.objects.filter(id=appointment_id).delete()
+
+        return redirect('generuj_daty_i_godziny')  # Nazwa widoku
 
     else:
-        form = DateForm()
+        form = DateForm()  # Załóżmy, że taki formularz istnieje
 
-    return render(request, 'formularz_daty.html', {'form': form, 'doctors': doctors})
-
-
-
+    appointments = Calendar.objects.all()
+    return render(request, 'formularz_daty.html', {'form': form, 'doctors': doctors, 'appointments': appointments})
 
 def usun_wszystkie_wpisy(request):
     if request.method == 'POST':
@@ -198,9 +225,32 @@ def get_calendar_data(request):
 
     return JsonResponse(data, safe=False)
 
+
+def reserved_appointments(request):
+    # Pobierz wszystkie rezerwacje i dołącz powiązane obiekty lekarza i pacjenta
+    appointments = Reservation.objects.select_related('doctor', 'patient').all()
+    # Przygotuj dane do wyświetlenia w kalendarzu
+    calendar_data = []
+    for appointment in appointments:
+        day = appointment.data.weekday()  # Dzień tygodnia jako liczba
+        hour = appointment.data.strftime('%H:%M')  # Godzina jako tekst
+        calendar_data.append({
+            'day': day,
+            'hour': hour,
+            'doctor_name': f'{appointment.doctor.first_name} {appointment.doctor.last_name}',
+            'patient_name': f'{appointment.patient.name} {appointment.patient.last_name}'
+        })
+    return render(request, 'secretary_calendar.html', {'calendar_data': calendar_data})
+
+
 def usun_przeterminowane_rezerwacje():
     # Pobranie aktualnej daty i czasu
+    print('USUN przeterminowane')
+
     teraz = timezone.now()
 
     # Usunięcie rezerwacji, które już minęły
     Reservation.objects.filter(data__lt=teraz).delete()
+
+    # Usunięcie wpisów z kalendarza, które już minęły
+    Calendar.objects.filter(data__lt=teraz).delete()

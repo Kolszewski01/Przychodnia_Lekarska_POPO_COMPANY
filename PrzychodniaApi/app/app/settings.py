@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'patient_record',
     'kalendarz',
     'visit',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -110,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CRONJOBS = [
-    ('*/30 * * * *', 'twoja_aplikacja.nazwa_pliku.usun_przeterminowane_rezerwacje')
+    ('*/5 * * * *', 'kalendarz.views.usun_przeterminowane_rezerwacje')
 ]
 
 

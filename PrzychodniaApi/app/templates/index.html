@@ -99,12 +99,31 @@
                 </div>
             </nav>
             <div class="content">
-                <div id="review">
-                    <p>
-                        <h2>O nas</h2>
-                        to jest SEKRETARKA
-                    </p>
-                </div>
+
+                        <table class="table-styled">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Lekarz</th>
+                    <th>Numer Sali</th>
+                    <th>Status</th>
+                    <th>Cena</th>
+                    <th>Pacjent</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for visit in secretary_visits %}
+                    <tr>
+                        <td>{{ visit.reservation_copy.data }}</td>
+                        <td>{{ visit.doctor }}</td>
+                        <td>{{ visit.room_number }}</td>
+                        <td>{{ visit.status }}</td>
+                        <td>{{ visit.price }}</td>
+                        <td>{{ visit.patient }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
             </div>
         </main>
         {% elif user.role == "patient" %}
@@ -187,36 +206,25 @@
                 <div id="specialist">
                     <h2>Nasi specjaliści</h2>
                     <div>
-                        {% for i in "12345" %}
-                            {% with doctor_image='images/profile_images/doctor' %}
+                        {% for doctor in doctors %}
                             <div class="doctor-item">
                                 <div class="doctor-info">
-                                    <img src="{% static doctor_image|stringformat:"s" %}{{ i }}.png" width="200px" height="200px">
+                                    {% if doctor.profile_image %}
+                                        <img src="{{ doctor.profile_image.url }}" width="200px" height="200px">
+
+                                    {% endif %}
                                     <div class="text-info">
-                                        {% if i == "1" %}
-                                            <p><strong>Lekarz Medycyny estetycznej</strong> Mariusz Kupniewski</p>
-                                            <p><strong>Cena za wizytę: </strong>200zł</p>
-                                        {% elif i == "2" %}
-                                            <p><strong>Lekarz ginekolog </strong> Katarzyna Bąk</p>
-                                            <p><strong>Cena za wizytę: </strong>250zł</p>
-                                        {% elif i == "3" %}
-                                            <p><strong>Lekarz Urolog </strong> Krzysztof Skiba</p>
-                                            <p><strong>Cena za wizytę: </strong>150zł</p>
-                                        {% elif i == "4" %}
-                                            <p><strong>Lekarz Psychiatra </strong> Grzegorz Szatkowski</p>
-                                            <p><strong>Cena za wizytę: </strong>300zł</p>
-                                        {% elif i == "5" %}
-                                            <p><strong>Lekarz Pediatra </strong> Łukasz Mańczyk</p>
-                                            <p><strong>Cena za wizytę: </strong>200zł</p>
-                                        {% endif %}
+                                         <p><strong>{{ doctor.specialization }}</strong>
+                                             {{ doctor.get_prof_title_display }} {{ doctor.first_name }}
+                                             {{ doctor.last_name }}</p>
+                                        <p><strong>Cena za wizytę: </strong>{{ doctor.visit_price }}zł</p>
                                     </div>
                                 </div>
                             </div>
-                            {% endwith %}
                         {% endfor %}
                     </div>
                 </div>
-        </div>
+
     </main>
     {% endif %}
 <!-- Footer -->

@@ -40,4 +40,5 @@ urlpatterns = [
     path('medical_records/', MedicalRecordsView.as_view(), name='medical_records'),
     path('edit_medical_record/<int:record_id>/', EditMedicalRecordView.as_view(), name='edit_medical_record'),
     path('add_visit/', VisitCreateView.as_view(), name='add_visit'),
+
 ]
