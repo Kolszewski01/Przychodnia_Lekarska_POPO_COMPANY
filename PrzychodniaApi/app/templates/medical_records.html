@@ -4,50 +4,104 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="{% static 'rejestracja.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
- <h2>Wyszukiwanie Dokumentacji Pacjenta</h2>
-  <form method="get" action="{% url 'medical_records' %}">
-    <label for="pesel">Podaj PESEL pacjenta:</label>
-    <input type="text" name="pesel" id="pesel" required>
-    <button type="submit">Szukaj</button>
-  </form>
+    <header>
+        <div class="section">
+            <h2>Przychodnia online</h2>
+        </div>
 
-  {% if searched_pesel %}
-    {% if patient %}
-      <h2>Dokumentacja Medyczna - {{ patient.full_name }} (PESEL: {{ searched_pesel }})</h2>
-      {% if medical_records %}
-        {% for record in medical_records %}
-            <div class="patient_records">
-                <strong>Alergie: </strong>{{ record.allergies }}
-            </div>
-            <div class="patient_records">
-                <strong>Historia medyczna: </strong>{{ record.medical_history }}
-            </div>
-            <div class="patient_records">
-                <strong>Notatki z wizyt: </strong>{{ record.visit_notes }}
-            </div>
-            <div class="patient_records">
-                <strong> Operacje: </strong>{{ record.operations}}
-            </div>
-            <div class="patient_records">
-                <strong> Szczepionki: </strong>{{ record.vaccinations }}
-            </div>
-            <div class="patient_records">
-                <strong> Wyniki testów: </strong>{{ record.test_results }}
-            </div>
-          <a href="{% url 'edit_medical_record' record_id=record.id %}" class="btn btn-primary">Edytuj rekord</a>
-        {% endfor %}
-      {% else %}
-        <p>Brak dostępnych rekordów medycznych dla tego pacjenta.</p>
-      {% endif %}
-    {% else %}
-      <p>Brak pacjenta o numerze PESEL: {{ searched_pesel }}</p>
-    {% endif %}
+        <div class="section">
+            <h2>Numer telefonu: 623 772 612</h2>
+        </div>
+
+        <div class="section" >
+            <h2>Olsztyn, Słoneczna 54 </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+                Zalogowany użytkownik: <b>{{user.email}}</b>
+            {% else %}
+                <a href="{% url 'login' %}">zaloguj się</a>
+            {% endif %}
+            </h2>
+        </div>
+        <div class="section">
+            <h2>
+            {% if user.is_authenticated %}
+
+            {% else %}
+                <a href="/register_patient/">rejestracja</a>
+            {% endif %}
+            </h2>
+        </div>
+    </header>
+<main>
+    <nav>
+        <div id="map-container">
+            <a href="{% url 'medical_records' %}">Dokumentacja medyczna</a>
+            <a href="{% url 'add_medical_documentation' %}">Dodaj wpis do dokumentacji medycznej</a>
+            <a href="{% url 'prescription_create' %}">Wypisz receptę</a>
+            <a href="{% url 'change_password' %}">Zmień hasło</a>
+            <a href="/" class="to_menu">Do menu</a>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+          <button type="submit">Wyloguj</button>
+        </form>
+        </div>
+    </nav>
+    <div id="documentation">
+     <h2>Wyszukiwanie Dokumentacji Pacjenta</h2>
+      <form method="get" action="{% url 'medical_records' %}">
+        <label for="pesel">Podaj PESEL pacjenta:</label>
+        <input type="text" name="pesel" id="pesel" required>
+        <button type="submit">Szukaj</button>
+      </form>
+
+    <div>
+      {% if searched_pesel %}
+        {% if patient %}
+          <h2>Dokumentacja Medyczna - {{ patient.full_name }} (PESEL: {{ searched_pesel }})</h2>
+          {% if medical_records %}
+            {% for record in medical_records %}
+                <div class="patient_records">
+                    <strong>Alergie: </strong>{{ record.allergies }}
+                </div>
+                <div class="patient_records">
+                    <strong>Historia medyczna: </strong>{{ record.medical_history }}
+                </div>
+                <div class="patient_records">
+                    <strong>Notatki z wizyt: </strong>{{ record.visit_notes }}
+                </div>
+                <div class="patient_records">
+                    <strong> Operacje: </strong>{{ record.operations}}
+                </div>
+                <div class="patient_records">
+                    <strong> Szczepionki: </strong>{{ record.vaccinations }}
+                </div>
+                <div class="patient_records">
+                    <strong> Wyniki testów: </strong>{{ record.test_results }}
+                </div>
+              <a href="{% url 'edit_medical_record' record_id=record.id %}" class="btn btn-primary">Edytuj rekord</a>
+            {% endfor %}
+          {% else %}
+            <p>Brak dostępnych rekordów medycznych dla tego pacjenta.</p>
+          {% endif %}
+        {% else %}
+          <p>Brak pacjenta o numerze PESEL: {{ searched_pesel }}</p>
+        {% endif %}
+  </div>
+</div>
   {% else %}
     <p>Wprowadź numer PESEL pacjenta, aby wyszukać dokumentację medyczną.</p>
   {% endif %}
-
+</main>
+<footer>
+    <img src="{% static 'images/popo.png' %}" width="80px" height="80px" >
+    <p>&copy; 2024 Przychodnia POPOCOMANY</p>
+    <img src="{% static 'images/doc.png' %}" width="80px" height="80px" >
+</footer>
 </body>
 </html>

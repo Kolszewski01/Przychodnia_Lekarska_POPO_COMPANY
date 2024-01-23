@@ -320,3 +320,27 @@ p {
     opacity: 1;
     transform: translateY(0);
 }
+#documentation{
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+    margin-left: auto;
+    justify-content: center;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+}
+label {
+    width: 300px;
+    margin-bottom: 10px;
+}
+.login-container {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
