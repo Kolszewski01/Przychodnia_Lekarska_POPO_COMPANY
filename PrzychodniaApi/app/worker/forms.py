@@ -29,7 +29,7 @@ class DoctorRegistrationForm(UserCreationForm):
     street = forms.CharField(max_length=120, label='Street')
     house_number = forms.CharField(max_length=10, label='House Number')
     zip_code = forms.CharField(max_length=10, label='ZIP Code')
-    profile_image = forms.ImageField(label='Profile Image', required=False)
+    profile_image = forms.ImageField(label='Profile Image', required=True)
     visit_price = forms.DecimalField(
         max_digits=10,
         decimal_places=2,
