@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'rejestracja.css' %}">
 </head>
 <body>
-    <div id="registration">
+    <div class="login-container">
         <h2>Rejestracja pacjenta</h2>
         <form method="post" action="{% url 'register_patient' %}">
             {% csrf_token %}
