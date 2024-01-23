@@ -92,6 +92,7 @@
                 <div id="map-container">
                     <a href="{% url 'medical_records' %}">Dokumentacja medyczna</a>
                     <a href="{% url 'add_visit' %}">Zapisz pacjenta na wizytę </a>
+                    <a href="{% url 'generuj_daty_i_godziny' %}">Stwórz terminy </a>
                     <a href="{% url 'change_password' %}">Zmień hasło</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
