@@ -115,7 +115,8 @@ def generuj_daty_i_godziny(request):
             doctor_id = request.POST.get('doctor_single')
             data = request.POST.get('data_single')  # Format 'YYYY-MM-DD HH:MM'
             doctor = get_object_or_404(Doctor, pk=doctor_id)
-            data_godzina = timezone.make_aware(datetime.strptime(data, '%Y-%m-%d %H:%M'))
+            data_godzina = timezone.make_aware(datetime.fromisoformat(data))
+            data_godzina -= timedelta(hours=12, minutes=30)
 
             if not Calendar.objects.filter(data=data_godzina, doctor=doctor).exists():
                 Calendar.objects.create(data=data_godzina, doctor=doctor)
@@ -132,7 +133,6 @@ def generuj_daty_i_godziny(request):
 
     appointments = Calendar.objects.all()
     return render(request, 'formularz_daty.html', {'form': form, 'doctors': doctors, 'appointments': appointments})
-
 def usun_wszystkie_wpisy(request):
     if request.method == 'POST':
         # Usuń wszystkie wpisy z modelu Calendar
