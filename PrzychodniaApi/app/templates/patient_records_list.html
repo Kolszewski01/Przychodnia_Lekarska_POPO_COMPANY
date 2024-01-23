@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Przychodnia Online</title>
+    <title>Dokumentacja medyczna</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <script src="{% static 'script.js' %}" defer></script>
 </head>
@@ -44,7 +44,7 @@
             <nav>
                 <div id="map-container">
                     <a href="/" class="to_menu">Do menu </a>
-                    <a href="">Zapisz się na wizytę </a>
+                    <a href="{% url 'lista_lekarzy' %}">Zapisz się na wizytę </a>
                     <a href="{% url 'prescription-list' %}">Zobacz Recepty</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
@@ -76,9 +76,9 @@
                 </div>
             {% endfor %}
     </div>
-    {% else %}
-        <p>Brak dostępnych rekordów pacjenta.</p>
-    {% endif %}
+        {% else %}
+            <p>Brak dostępnych rekordów pacjenta.</p>
+        {% endif %}
     </div>
     </main>
     <footer>
@@ -86,7 +86,5 @@
         <p>&copy; 2024 Przychodnia POPOCOMANY</p>
         <img src="{% static 'images/doc.png' %}" width="80px" height="80px" >
     </footer>
-
-
 </body>
 </html>

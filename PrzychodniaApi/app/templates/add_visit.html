@@ -1,16 +1,18 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Dodawanie nowej wizyty</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
 <h2>Dodaj nową wizytę</h2>
-  <form id="visitForm" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" id="submitBtn">Zapisz</button>
-  </form>
+    <form id="visitForm" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" id="submitBtn">Zapisz</button>
+    </form>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   {% if success_message %}

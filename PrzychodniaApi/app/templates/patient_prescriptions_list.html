@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Recepty Pacjenta</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
@@ -32,8 +32,8 @@
   <main>
     <nav>
       <div id="map-container">
-        <a href="api/patient_records/" onclick="redirectOnce(this)">Dokumentacja medyczna</a>
-        <a href="">Zapisz się na wizytę</a>
+        <a href="{% url 'patient_records_list' %}" onclick="redirectOnce(this)">Dokumentacja medyczna</a>
+        <a href="{% url 'lista_lekarzy' %}">Zapisz się na wizytę</a>
         <a href="/" class="to_menu">Do menu</a>
         <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}

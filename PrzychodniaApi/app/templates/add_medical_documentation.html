@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodawanie wpisu do dokumentacji meczycznej</title>
+</head>
+<body>
+ <h2>Dodaj dokumentację medyczną</h2>
+
+  {% if messages %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      {% for message in messages %}
+        {% if message.tags == 'success' %}
+          Swal.fire({
+            icon: 'success',
+            title: 'Sukces!',
+            text: '{{ message }}',
+          });
+        {% endif %}
+      {% endfor %}
+    </script>
+  {% endif %}
+
+  <form method="post" action="{% url 'add_medical_documentation' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Zapisz</button>
+  </form>
+</body>
+</html>

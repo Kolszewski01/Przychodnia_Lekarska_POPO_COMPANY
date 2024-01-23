@@ -44,8 +44,8 @@
         {% if user.is_staff %}
         <main>
             <nav>
-                <a href="register/doctor"> Zarejestruj lekarza</a>
-                <a href="register/secretary"> Zarejestruj sekretarkę</a>
+                <a href="{% url 'register_doctor' %}"> Zarejestruj lekarza</a>
+                <a href="{% url 'register_secretary' %}"> Zarejestruj sekretarkę</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                   <button type="submit">Wyloguj</button>
@@ -68,6 +68,7 @@
             <nav>
                 <div id="map-container">
                     <a href="{% url 'medical_records' %}">Dokumentacja medyczna</a>
+                    <a href="{% url 'add_medical_documentation' %}">Dodaj wpis do dokumentacji medycznej</a>
                     <a href="{% url 'prescription_create' %}">Wypisz receptę</a>
                     <a href="{% url 'change_password' %}">Zmień hasło</a>
                 <form method="post" action="{% url 'logout' %}">
@@ -94,7 +95,7 @@
                     <a href="{% url 'change_password' %}">Zmień hasło</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
-                  <button type="submit">Wyloguj</button>
+                    <button type="submit">Wyloguj</button>
                 </form>
                 </div>
             </nav>
@@ -130,7 +131,7 @@
            <main>
             <nav>
                 <div id="map-container">
-                    <a href="api/patient_records/">Dokumentacja medyczna</a>
+                    <a href="{% url 'patient_records_list' %}">Dokumentacja medyczna</a>
                     <a href="{% url 'lista_lekarzy' %}">Zapisz się na wizytę </a>
                     <a href="{% url 'prescription-list' %}">Zobacz Recepty</a>
                 <form method="post" action="{% url 'logout' %}">

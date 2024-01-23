@@ -1,10 +1,10 @@
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.views import View
-from rest_framework import generics, viewsets
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from patient.models import Patient
-from .forms import PrescriptionForm
+from .forms import PrescriptionForm, PatientRecordForm
 from .models import PatientRecord, Prescription
 from .serializers import PatientRecordSerializer, PrescriptionSerializer
 from django.views.generic import ListView
@@ -79,4 +79,21 @@ class PrescriptionAdminView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Przypisz pacjenta do nowego rekordu na podstawie relacji z PatientRecord
         serializer.save(patient_record__patient=self.request.user.patient)
+
+def add_medical_documentation(request):
+    if request.method == 'POST':
+        form = PatientRecordForm(request.POST)
+        if form.is_valid():
+            patient_record = form.save(commit=False)
+            # Przypisz pacjenta na podstawie wyboru z formularza
+            patient_record.patient = form.cleaned_data['patient']
+            patient_record.save()
+            messages.success(request, 'Dokumentacja medyczna została pomyślnie dodana.')
+            return redirect('add_medical_documentation')
+        else:
+            messages.error(request, 'Wystąpił błąd. Sprawdź poprawność wprowadzonych danych.')
+    else:
+        form = PatientRecordForm()
+
+    return render(request, 'add_medical_documentation.html', {'form': form})
 

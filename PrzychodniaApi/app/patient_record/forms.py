@@ -12,7 +12,7 @@ class PrescriptionForm(forms.ModelForm):
 class PatientRecordForm(forms.ModelForm):
     class Meta:
         model = PatientRecord
-        fields = ['allergies', 'medical_history', 'visit_notes', 'operations', 'vaccinations', 'test_results']
+        fields = ['patient', 'allergies', 'medical_history', 'visit_notes', 'operations', 'vaccinations', 'test_results']
         widgets = {
             'allergies': forms.Textarea(attrs={'rows': 3}),
             'medical_history': forms.Textarea(attrs={'rows': 3}),
