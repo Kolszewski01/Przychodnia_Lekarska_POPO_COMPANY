@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Dodawanie recepty</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
 </head>
 <body>
     <header>
@@ -36,6 +37,13 @@
                 <a href="/register_patient/">rejestracja</a>
             {% endif %}
             </h2>
+        </div>
+        <div class="section">
+            <button id="increaseBtn" class="button-font" style="background-image: url({% static 'images/A.png' %})"></button>
+        </div>
+
+        <div class="section">
+            <button id="decreaseBtn" class="button-font" style="background-image: url({% static 'images/smallA.png' %})"></button>
         </div>
     </header>
     <main>

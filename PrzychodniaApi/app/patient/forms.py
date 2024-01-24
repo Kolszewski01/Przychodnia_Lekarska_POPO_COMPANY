@@ -13,7 +13,7 @@ class PatientRegistrationForm(UserCreationForm):
     birth_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'})
     )
-
+    first_name = forms.CharField(max_length=120)
     second_name = forms.CharField(max_length=120, required=False)
     last_name = forms.CharField(max_length=120)
     pesel = forms.CharField(max_length=12)
@@ -25,7 +25,7 @@ class PatientRegistrationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = Patient
-        fields = ('email', 'password1', 'password2', 'second_name', 'last_name', 'pesel', 'birth_date', 'phone_number', 'city', 'street', 'house_number', 'zip_code')
+        fields = ('email', 'password1', 'password2','first_name', 'second_name', 'last_name', 'pesel', 'birth_date', 'phone_number', 'city', 'street', 'house_number', 'zip_code')
 
     @transaction.atomic
     def save(self, commit=True):

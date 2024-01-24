@@ -4,6 +4,7 @@
 <head>
     <title>Formularz daty</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
 </head>
 <body>
     <header>
@@ -36,14 +37,20 @@
             {% endif %}
             </h2>
         </div>
+        <div class="section">
+            <button id="increaseBtn" class="button-font" style="background-image: url({% static 'images/A.png' %})"></button>
+        </div>
+
+        <div class="section">
+            <button id="decreaseBtn" class="button-font" style="background-image: url({% static 'images/smallA.png' %})"></button>
+        </div>
     </header>
 <main>
     <nav>
         <div id="map-container">
             <a href="{% url 'medical_records' %}">Dokumentacja medyczna</a>
-            <a href="{% url 'add_medical_documentation' %}">Dodaj wpis do dokumentacji medycznej</a>
-            <a href="{% url 'prescription_create' %}">Wypisz receptę</a>
             <a href="{% url 'change_password' %}">Zmień hasło</a>
+            <a href="{% url 'delete_visit' %}">Usuń wizytę </a>
             <a href="/" class="to_menu">Do menu</a>
         <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}

@@ -8,7 +8,6 @@ body {
     background-color: #D6E6F2;
     color: #000;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    /*cursor: url('images/mov.ani'), auto;*/
 }
 
 header {
@@ -58,8 +57,8 @@ nav a:hover {
     background-color: #6b92bd;
 }
 #map-container {
-    width: 300px; /* Adjust width as needed */
-    height: 80%; /* Adjust height as needed */
+    width: 300px;
+    height: 80%;
 }
 .section a{
     padding: 15px;
@@ -211,22 +210,22 @@ nav button:hover {
 }
 .section-header {
     text-align: center;
-    margin: 20px 0; /* Ustaw odpowiedni margines na górze i na dole */
+    margin: 20px 0;
 }
 
 .prescriptions-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Wyśrodkuj kontener na osi poziomej */
-    align-items: center; /* Wyśrodkuj kontener na osi pionowej */
-    gap: 20px; /* odstęp między receptami */
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
 }
 
 .prescription-item {
-    width: calc(33.33% - 20px); /* 33.33% szerokości, aby pomieścić 3 elementy w rzędzie */
-    background-color: #f5f5f5; /* Kolor tła recepty */
+    width: calc(33.33% - 20px);
+    background-color: #f5f5f5;
     padding: 15px;
-    border: 1px solid #ddd; /* Dodaj obramowanie */
+    border: 1px solid #ddd;
 }
 
 .prescription-detail {
@@ -303,6 +302,12 @@ p {
 .doctor-item:nth-child(5) {
     animation-delay: 2.5s; /* piąty lekarz*/
 }
+.doctor-item:nth-child(6) {
+    animation-delay: 3s; /* szósty lekarz*/
+}
+.doctor-item:nth-child(7) {
+    animation-delay: 3.5s; /* siódmy lekarz*/
+}
 .doctor-info {
     display: flex;
     align-items: flex-start;
@@ -343,4 +348,49 @@ label {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.button-font {
+      display: inline-block;
+      background-size: contain;
+      background-repeat: no-repeat;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      cursor: pointer;
+      background-color: transparent;
+}
+#review p {
+  color: #333;
+  padding: 10px;
+  transition: transform 0.3s ease;
+}
+
+#review p:hover {
+  transform: scale(1.03);
+}
+
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  25%, 50%, 75% {
+    opacity: 0.6;
+  }
+}
+
+footer p {
+  font-size: 16px;
+  color: #000000;
+  animation: flicker 2.5s infinite;
+}
+#delete{
+    display: flex;
+    margin: auto;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #B9D7EA;
+    width: 60%;
+    height: max-content;
+
 }

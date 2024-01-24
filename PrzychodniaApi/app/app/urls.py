@@ -22,8 +22,10 @@ from patient.views import register_patient
 from user.views import CustomLogoutView, CustomLoginView
 from worker.views import register_doctor, register_secretary, change_password, MedicalRecordsView, EditMedicalRecordView
 from patient_record.views import PrescriptionCreateView
-from visit.views import VisitCreateView
+from visit.views import delete_visit
 from patient_record.views import add_medical_documentation
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,7 +42,7 @@ urlpatterns = [
     path('prescription/create/', PrescriptionCreateView.as_view(), name='prescription_create'),
     path('medical_records/', MedicalRecordsView.as_view(), name='medical_records'),
     path('edit_medical_record/<int:record_id>/', EditMedicalRecordView.as_view(), name='edit_medical_record'),
-    path('add_visit/', VisitCreateView.as_view(), name='add_visit'),
+    path('delete_visit/', delete_visit, name='delete_visit'),
     path('add_medical_record/', add_medical_documentation, name='add_medical_documentation'),
 
 ]

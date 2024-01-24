@@ -40,13 +40,21 @@
             {% endif %}
             </h2>
         </div>
+        <div class="section">
+            <button id="increaseBtn" class="button-font" style="background-image: url({% static 'images/A.png' %})"></button>
+        </div>
+
+        <div class="section">
+            <button id="decreaseBtn" class="button-font" style="background-image: url({% static 'images/smallA.png' %})"></button>
+        </div>
     </header>
     <main>
 
             <nav>
                 <div id="map-container">
-                    <a href="/" class="to_menu">Do menu </a>
-                    <a href="{% url 'lista_lekarzy' %}" onclick="redirectOnce(this)">Zapisz się na wizytę</a>
+                    <a href="{% url 'patient_records_list' %}">Dokumentacja medyczna</a>
+
+                    <a href="/" class="to_menu">Do menu</a>
                     <a href="{% url 'prescription-list' %}">Zobacz Recepty</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}

@@ -29,7 +29,6 @@ class DoctorRegistrationForm(UserCreationForm):
     street = forms.CharField(max_length=120, label='Street')
     house_number = forms.CharField(max_length=10, label='House Number')
     zip_code = forms.CharField(max_length=10, label='ZIP Code')
-    profile_image = forms.ImageField(label='Profile Image', required=True)
     visit_price = forms.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -41,7 +40,7 @@ class DoctorRegistrationForm(UserCreationForm):
         model = Doctor
         fields = (
         'name','email', 'password1', 'password2', 'first_name', 'last_name', 'phone_number', 'city', 'street', 'house_number',
-        'zip_code', 'specialization', 'room_number', 'prof_title', 'role', 'profile_image', 'visit_price')
+        'zip_code', 'specialization', 'room_number', 'prof_title', 'role', 'visit_price')
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if Doctor.objects.filter(email=email).exists():

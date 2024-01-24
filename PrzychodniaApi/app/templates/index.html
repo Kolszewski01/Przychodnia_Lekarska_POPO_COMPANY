@@ -38,6 +38,13 @@
             {% endif %}
             </h2>
         </div>
+    <div class="section">
+        <button id="increaseBtn" class="button-font" style="background-image: url({% static 'images/A.png' %})"></button>
+    </div>
+
+    <div class="section">
+        <button id="decreaseBtn" class="button-font" style="background-image: url({% static 'images/smallA.png' %})"></button>
+    </div>
     </header>
 <!-- Main content -->
     {% if user.is_authenticated %}
@@ -79,11 +86,34 @@
             </nav>
             <div class="content">
                 <div id="review">
-                    <p>
-                        <h2>O nas</h2>
-                        to jest lekarz
-                    </p>
+                    <h2>Twoje wizyty</h2>
+                        {% if doctor_visits %}
+                          <table class="table-styled">
+                            <thead>
+                              <tr>
+                                <th>Data</th>
+                                <th>Lekarz</th>
+                                <th>Numer Sali</th>
+                                <th>Status</th>
+                                <th>Cena</th>
+                                <th>Pacjent</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for visit in doctor_visits %}
+                                <tr>
+                                    <td>{{ visit.reservation_copy.data }}</td>
+                                    <td>{{ visit.doctor }}</td>
+                                    <td>{{ visit.room_number }}</td>
+                                    <td>{{ visit.status }}</td>
+                                    <td>{{ visit.price }}</td>
+                                    <td>{{ visit.patient }}</td>
+                                </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
                 </div>
+                {% endif %}
             </div>
         </main>
         {% elif user.role == "secretary" %}
@@ -91,7 +121,7 @@
             <nav>
                 <div id="map-container">
                     <a href="{% url 'medical_records' %}">Dokumentacja medyczna</a>
-                    <a href="{% url 'add_visit' %}">Zapisz pacjenta na wizytę </a>
+                    <a href="{% url 'delete_visit' %}">Usuń wizytę </a>
                     <a href="{% url 'generuj_daty_i_godziny' %}">Stwórz terminy </a>
                     <a href="{% url 'change_password' %}">Zmień hasło</a>
                 <form method="post" action="{% url 'logout' %}">
@@ -198,7 +228,7 @@
             <div id="review">
                 <h2>O nas</h2>
                 <p>
-                    Witamy w Przychodni Online, miejscu, gdzie zdrowie i dobre samopoczucie naszych pacjentów stają się naszym priorytetem. Jesteśmy zespołem doświadczonych specjalistów z różnych dziedzin medycyny, którzy łączą wiedzę i pasję, aby zapewnić Państwu opiekę na najwyższym poziomie.
+                    Witamy w <b>Przychodni Online</b>, miejscu, gdzie zdrowie i dobre samopoczucie naszych pacjentów stają się naszym priorytetem. Jesteśmy zespołem doświadczonych specjalistów z różnych dziedzin medycyny, którzy łączą wiedzę i pasję, aby zapewnić Państwu opiekę na najwyższym poziomie.
                     Nasza przychodnia oferuje szeroki zakres usług medycznych, w tym konsultacje specjalistyczne, diagnostykę, leczenie ambulatoryjne oraz wsparcie w zakresie zdrowia psychicznego. Korzystamy z nowoczesnego sprzętu i najnowszych technologii, aby zapewnić dokładną diagnozę i skuteczne leczenie.
                     Wierzymy, że kluczem do skutecznej opieki zdrowotnej jest indywidualne podejście do każdego pacjenta. Dlatego nasz personel jest zawsze gotowy wysłuchać, zrozumieć i dostosować plan leczenia do unikalnych potrzeb każdego z Państwa.
                     Nasze zaangażowanie w doskonalenie umiejętności i ciągłe szkolenie personelu gwarantuje, że zawsze jesteśmy na bieżąco z najnowszymi osiągnięciami w medycynie. Dążymy do tego, aby nasza przychodnia była miejscem, gdzie każdy pacjent czuje się bezpiecznie, szanowanie i komfortowo.
@@ -232,7 +262,7 @@
 <!-- Footer -->
     <footer>        
         <img src="{% static 'images/popo.png' %}" width="80px" height="80px" >
-        <p>&copy; 2024 Przychodnia POPOCOMANY</p>
+        <p>&copy; 2024 Przychodnia POPOCOMPANY</p>
         <img src="{% static 'images/doc.png' %}" width="80px" height="80px" >
     </footer>
 </body>

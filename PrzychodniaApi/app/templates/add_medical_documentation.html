@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Dodawanie wpisu do dokumentacji meczycznej</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}" defer></script>
 </head>
 <body>
     <header>
@@ -36,6 +37,13 @@
                 <a href="/register_patient/">rejestracja</a>
             {% endif %}
             </h2>
+        </div>
+        <div class="section">
+            <button id="increaseBtn" class="button-font" style="background-image: url({% static 'images/A.png' %})"></button>
+        </div>
+
+        <div class="section">
+            <button id="decreaseBtn" class="button-font" style="background-image: url({% static 'images/smallA.png' %})"></button>
         </div>
     </header>
     <main>
@@ -81,7 +89,7 @@
     </main>
 <footer>
     <img src="{% static 'images/popo.png' %}" width="80px" height="80px" >
-    <p>&copy; 2024 Przychodnia POPOCOMANY</p>
+    <p>&copy; 2024 Przychodnia POPOCOMPANY</p>
     <img src="{% static 'images/doc.png' %}" width="80px" height="80px" >
 </footer>
 </body>

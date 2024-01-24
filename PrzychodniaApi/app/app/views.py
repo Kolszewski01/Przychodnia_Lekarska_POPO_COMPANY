@@ -10,16 +10,20 @@ def home(request):
     num_doctors = Doctor.objects.count()
     num_secretaries = Secretary.objects.count()
     num_patients = Patient.objects.count()
-    doctors = Doctor.objects.all()  # Pobieranie wszystkich lekarzy
-
+    doctors = Doctor.objects.all()
 
     user_visits = None
-    if request.user.is_authenticated and role == 'patient' and hasattr(request.user, 'patient'):
-        user_visits = Visit.objects.filter(patient=request.user.patient)
-
     secretary_visits = None
-    if request.user.is_authenticated and role == 'secretary':
-        secretary_visits = Visit.objects.all()
+    doctor_visits = None
+
+    if request.user.is_authenticated:
+        if role == 'patient' and hasattr(request.user, 'patient'):
+            user_visits = Visit.objects.filter(patient=request.user.patient)
+        elif role == 'secretary':
+            secretary_visits = Visit.objects.all()
+        elif role == 'doctor' and hasattr(request.user, 'doctor'):
+            # Dla lekarza, pobierz wizyty przypisane do tego lekarza
+            doctor_visits = Visit.objects.filter(doctor=request.user.doctor)
 
     context = {
         'num_doctors': num_doctors,
@@ -27,9 +31,9 @@ def home(request):
         'num_patients': num_patients,
         'role': role,
         'user_visits': user_visits,
-        'secretary_visits': secretary_visits,  # Dodaj informacje o wizytach dla sekretarki
-        'doctors': doctors,  # Dodanie lekarzy do kontekstu
-
+        'secretary_visits': secretary_visits,
+        'doctor_visits': doctor_visits,
+        'doctors': doctors,
     }
 
     return render(request, 'index.html', context)
