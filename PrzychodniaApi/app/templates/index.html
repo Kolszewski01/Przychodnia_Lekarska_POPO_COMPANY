@@ -6,6 +6,7 @@
     <title>Przychodnia Online</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <script src="{% static 'script.js' %}" defer></script>
+    <link rel="icon" href="{% static "images/popo.png" %}" sizes="any" type="image/png">
 </head>
 <body>
     <header>
@@ -106,7 +107,7 @@
                                     <td>{{ visit.doctor }}</td>
                                     <td>{{ visit.room_number }}</td>
                                     <td>{{ visit.status }}</td>
-                                    <td>{{ visit.price }}</td>
+                                    <td>{{ visit.price }} zł</td>
                                     <td>{{ visit.patient }}</td>
                                 </tr>
                               {% endfor %}
@@ -150,7 +151,7 @@
                         <td>{{ visit.doctor }}</td>
                         <td>{{ visit.room_number }}</td>
                         <td>{{ visit.status }}</td>
-                        <td>{{ visit.price }}</td>
+                        <td>{{ visit.price }}<p>zł</p></td>
                         <td>{{ visit.patient }}</td>
                     </tr>
                 {% endfor %}
@@ -191,7 +192,7 @@
                         <td>{{ visit.doctor }}</td>
                         <td>{{ visit.room_number }}</td>
                         <td>{{ visit.status }}</td>
-                        <td>{{ visit.price }}</td>
+                        <td>{{ visit.price }} zł</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -261,7 +262,7 @@
     {% endif %}
 <!-- Footer -->
     <footer>        
-        <img src="{% static 'images/popo.png' %}" width="80px" height="80px" >
+        <img src="{% static 'images/logo.png' %}" width="80px" height="80px" >
         <p>&copy; 2024 Przychodnia POPOCOMPANY</p>
         <img src="{% static 'images/doc.png' %}" width="80px" height="80px" >
     </footer>

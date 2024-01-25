@@ -394,3 +394,31 @@ footer p {
     height: max-content;
 
 }
+footer p
+{
+   text-transform: uppercase;
+  background-image: linear-gradient(
+    -225deg,
+    #77a563 0%,
+    #105a7a 29%,
+    #791131 67%,
+    #3fe3c3 100%
+  );
+  background-size: auto auto;
+  background-clip: border-box;
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 3s linear infinite;
+  display: inline-block;
+      font-size: 18px;
+}
+
+@keyframes textclip {
+  to {
+    background-position: 200% center;
+  }
+}

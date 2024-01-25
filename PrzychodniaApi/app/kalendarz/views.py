@@ -76,60 +76,51 @@ def generuj_daty_i_godziny(request):
 
     if request.method == 'POST':
         if 'generate' in request.POST:
-            # Logika generowania wielu terminów
-            form = DateForm(request.POST)  # Załóżmy, że taki formularz istnieje
+            form = DateForm(request.POST)
             if form.is_valid():
                 end_date = form.cleaned_data['end_date']
                 doctor_id = request.POST.get('doctor')
                 doctor = get_object_or_404(Doctor, pk=doctor_id)
 
-                start_date = date.today()
+                start_date_time = timezone.localtime(timezone.now())  # Bieżąca data i godzina
                 interval = timedelta(minutes=30)
 
-                current_date = start_date
+                current_date = start_date_time.date()
                 while current_date <= end_date:
-                    if current_date.weekday() < 5:  # Poniedziałek do piątku
-                        godzina = datetime.combine(current_date, time(8, 0))
-                        godzina = timezone.make_aware(godzina)
-                        end_of_day = timezone.make_aware(datetime.combine(current_date, time(17, 30)))
+                    start_time = time(8, 0)
+                    end_time = time(17, 30) if current_date != start_date_time.date() else time(17, 0)
 
-                        while godzina <= end_of_day:
-                            if not Calendar.objects.filter(data=godzina, doctor=doctor).exists():
-                                nowy_rekord = Calendar(data=godzina, doctor=doctor)
-                                nowy_rekord.save()
+                    godzina = timezone.make_aware(datetime.combine(current_date, start_time))
 
-                            godzina += interval
-                            if godzina.time() > time(17, 30):
-                                break
-                            godzina = timezone.make_aware(datetime.combine(current_date, godzina.time()))
+                    while godzina.time() <= end_time:
+                        if not Calendar.objects.filter(data=godzina, doctor=doctor).exists():
+                            Calendar.objects.create(data=godzina, doctor=doctor)
+                        godzina += interval
+                        godzina = timezone.make_aware(datetime.combine(current_date, godzina.time()))
 
                     current_date += timedelta(days=1)
 
         elif 'delete' in request.POST:
-            # Logika usuwania wielu terminów
             doctor_id = request.POST.get('delete_doctor')
             Calendar.objects.filter(doctor_id=doctor_id).delete()
 
         elif 'add_single' in request.POST:
-            # Logika dodawania pojedynczego terminu
             doctor_id = request.POST.get('doctor_single')
             data = request.POST.get('data_single')  # Format 'YYYY-MM-DD HH:MM'
             doctor = get_object_or_404(Doctor, pk=doctor_id)
             data_godzina = timezone.make_aware(datetime.fromisoformat(data))
-            data_godzina -= timedelta(hours=12, minutes=30)
 
             if not Calendar.objects.filter(data=data_godzina, doctor=doctor).exists():
                 Calendar.objects.create(data=data_godzina, doctor=doctor)
 
         elif 'delete_single' in request.POST:
-            # Logika usuwania pojedynczego terminu
             appointment_id = request.POST.get('appointment_id')
             Calendar.objects.filter(id=appointment_id).delete()
 
         return redirect('generuj_daty_i_godziny')  # Nazwa widoku
 
     else:
-        form = DateForm()  # Załóżmy, że taki formularz istnieje
+        form = DateForm()
 
     appointments = Calendar.objects.all()
     return render(request, 'formularz_daty.html', {'form': form, 'doctors': doctors, 'appointments': appointments})
@@ -195,32 +186,43 @@ def get_calendar_data(request):
 
     if not date_str or not doctor_id:
         return JsonResponse({'error': 'Brak daty lub ID lekarza w zapytaniu GET'}, status=400)
-
     try:
-        start_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-        aware_start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
-        aware_end_date = timezone.make_aware(datetime.combine(start_date + timedelta(days=4), datetime.max.time()))
+        given_date = datetime.strptime(date_str, '%Y-%m-%d')
+        given_date = timezone.make_aware(given_date)
+
+        # Ustalanie poniedziałku i piątku tygodnia zawierającego podaną datę
+        start_of_week = given_date - timedelta(days=given_date.weekday())
+        end_of_week = start_of_week + timedelta(days=6)
+
+        print(start_of_week, end_of_week)
+        print(end_of_week)
+
     except ValueError:
+
         return HttpResponseBadRequest('Niepoprawny format daty')
 
-    # Pobranie obiektu lekarza
     doctor = get_object_or_404(Doctor, pk=doctor_id)
-
-    # Zapisanie wybranego lekarza w sesji
-    request.session['selected_doctor_id'] = doctor_id
-
-    # Pobranie zarezerwowanych terminów dla lekarza
     reserved_slots = Reservation.objects.filter(doctor=doctor).values_list('data', flat=True)
+    calendar_entries = Calendar.objects.filter(data__range=[start_of_week, end_of_week], doctor=doctor)
+    now = timezone.now()
+    # Dodajemy 1 godzinę do bieżącej godziny
+    now_plus_one_hour = now + timedelta(hours=1)
 
-    # Filtrowanie wpisów kalendarza według lekarza i daty oraz sprawdzanie, czy termin jest zarezerwowany
-    calendar_entries = Calendar.objects.filter(data__range=[aware_start_date, aware_end_date], doctor=doctor)
+    current_time_rounded = time(now_plus_one_hour.hour, now_plus_one_hour.minute)
+    print(current_time_rounded)
+    print(now_plus_one_hour)
+
     data = [
         {
             'day': entry.data.weekday(),
-            'time': entry.data.strftime('%H-%M'),  # Format 'HH-MM'
-            'reserved': entry.data in reserved_slots  # Sprawdzenie, czy termin jest zarezerwowany
+            'time': entry.data.strftime('%H-%M'),
+            'reserved': entry.data in reserved_slots
         }
-        for entry in calendar_entries if entry.data not in reserved_slots  # Dodanie do danych tylko jeśli termin nie jest zarezerwowany
+        for entry in calendar_entries
+        if entry.data.weekday() < 5 and entry.data not in reserved_slots and
+           (entry.data.date() > now_plus_one_hour.date() or
+            (entry.data.date() == now_plus_one_hour.date() and time(entry.data.hour,
+                                                                    entry.data.minute) > current_time_rounded))
     ]
 
     return JsonResponse(data, safe=False)
